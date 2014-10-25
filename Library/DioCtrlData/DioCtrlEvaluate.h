@@ -1,0 +1,19 @@
+#ifndef DIO_CTRL_EVALUATE_H
+#define DIO_CTRL_EVALUATE_H
+
+
+#include "DioCtrlData.h"
+
+bool time_out_success_for_input_comp(DioCtrlInputCompTypeData *comp_data, bool *has_response);
+bool dio_ctrl_input_low_2_high_event(DioCtrlInputCompTypeData *comp_data, bool *cancellation_reqiured_for_low_status_timer, bool *setting_required_for_high_status_timer);
+bool dio_ctrl_input_high_2_low_event(DioCtrlInputCompTypeData *comp_data, bool *cancellation_reqiured_for_high_status_timer, bool *setting_required_for_low_status_timer);
+bool enable_dio_ctrl_input_with_status_reset(DioCtrlInputCompTypeData *comp_data, bool *cancellation_required_for_status_timer);
+bool enable_dio_ctrl_input_with_no_status_reset(DioCtrlInputCompTypeData *comp_data, bool *timer_restart_reqiured_for_low_status, bool *timer_restart_reqiured_for_high_status) ;
+bool disable_dio_ctrl_input_with_status_reset(DioCtrlInputCompTypeData *comp_data,  bool *cancellation_required_for_status_timer);
+bool disable_dio_ctrl_input_with_no_status_reset(DioCtrlInputCompTypeData *comp_data,  bool *cancellation_required_for_status_timers);
+bool reset_dio_ctrl_input_with_status_reset(DioCtrlInputCompTypeData *comp_data, bool *timer_cancellation_required);
+bool reset_dio_ctrl_input_with_status_saving(DioCtrlInputCompTypeData *comp_data, bool *timer_cancellation_required);
+
+
+
+#endif
