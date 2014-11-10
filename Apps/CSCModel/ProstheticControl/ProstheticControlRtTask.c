@@ -96,21 +96,21 @@ static void *rt_prosthetic_control(void *args)
 	RTIME prosthetic_ctrl_time_ns;
 	ProstheticCtrl2ProstheticCtrlDurHandMsgAdditional prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data;
 
-	unsigned int run_time_cntr = 0;
+
 
 	SEM *dio_ctrl_rx_buff_sem = NULL;
 	SEM *dio_ctrl_tx_buff_sem = NULL;
 	DioCtrlRxShm *dio_ctrl_rx_buff_shm = NULL;
 	DioCtrlTxShm *dio_ctrl_tx_buff_shm = NULL;
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
-	task_cpuid = (PROSTHETIC_CONTROL_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+PROSTHETIC_CONTROL_CPU_THREAD_ID;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
+	task_cpuid = (PROSTHETIC_CONTROL_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_THREAD_ID, PROSTHETIC_CONTROL_CPU_THREAD_TASK_ID, PROSTHETIC_CONTROL_PERIOD, FALSE))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_TASK_ID, PROSTHETIC_CONTROL_PERIOD))  {
 		print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(PROSTHETIC_CONTROL_TASK_NAME, PROSTHETIC_CONTROL_TASK_PRIORITY, PROSTHETIC_CONTROL_STACK_SIZE, PROSTHETIC_CONTROL_MSG_SIZE,PROSTHETIC_CONTROL_POLICY, 1 << task_cpuid))) {
 		print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_THREAD_ID, PROSTHETIC_CONTROL_CPU_THREAD_TASK_ID, PROSTHETIC_CONTROL_PERIOD, PROSTHETIC_CONTROL_POSITIVE_JITTER_THRES, PROSTHETIC_CONTROL_NEGATIVE_JITTER_THRES, PROSTHETIC_CONTROL_RUN_TIME_THRES, "ProstheticControl", FALSE))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_TASK_ID, PROSTHETIC_CONTROL_PERIOD, "ProstheticControl"))  {
 		print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	curr_time = rt_get_time_cpuid(task_cpuid);	
@@ -119,7 +119,7 @@ static void *rt_prosthetic_control(void *args)
         period = nano2count(PROSTHETIC_CONTROL_PERIOD);
         rt_task_make_periodic(handler, curr_time + period, period);
 
-	prev_time = curr_time ;
+	prev_time = curr_time;
 	expected = curr_time + period;
 
 	// Initialization of semaphores should be done after initializing the rt task !!!!
@@ -152,7 +152,7 @@ static void *rt_prosthetic_control(void *args)
 		prosthetic_ctrl_time_ns = rt_get_time_ns_cpuid(timer_cpuid);	// use system time
 
 		expected += period;
-		evaluate_and_save_jitter(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_THREAD_ID, PROSTHETIC_CONTROL_CPU_THREAD_TASK_ID, curr_time, expected);
+		save_jitter(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_TASK_ID, prev_time, curr_time, period);
 		prev_time = curr_time;
 		// routines
 		if (! handle_gui_to_prosthetic_control_msg(static_robot_arm, &prosthetic_ctrl_status, prosthetic_ctrl_time_ns, static_msgs_gui_2_prosthetic_ctrl)) {
@@ -172,13 +172,7 @@ static void *rt_prosthetic_control(void *args)
 			print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "! handle_spike_data_buff()."); break; }
 		// routines	
 		execution_end = rt_get_time_cpuid(timer_cpuid);
-		evaluate_and_save_period_run_time(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_THREAD_ID, PROSTHETIC_CONTROL_CPU_THREAD_TASK_ID, curr_time, execution_end);		
-		run_time_cntr++;
-		if (run_time_cntr == NUM_OF_TASK_EXECUTIONS_4_PERFOMANCE_EVAL)
-		{
-			run_time_cntr = 0;
-			write_run_time_to_averaging_buffer(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_THREAD_ID, PROSTHETIC_CONTROL_CPU_THREAD_TASK_ID, curr_time, execution_end);	
-		}	
+		save_run_time(static_rt_tasks_data, PROSTHETIC_CONTROL_CPU_ID, PROSTHETIC_CONTROL_CPU_TASK_ID, curr_time, execution_end);		
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);

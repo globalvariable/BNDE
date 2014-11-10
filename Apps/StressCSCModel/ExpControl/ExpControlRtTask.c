@@ -100,16 +100,14 @@ static void *rt_exp_control(void *args)
 	RTIME exp_ctrl_time_ns;
 	unsigned int timer_cpuid, task_cpuid;
 
-	unsigned int run_time_cntr = 0;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
+	task_cpuid = (EXP_CONTROL_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
-	task_cpuid = (EXP_CONTROL_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+EXP_CONTROL_CPU_THREAD_ID;
-
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_THREAD_ID, EXP_CONTROL_CPU_THREAD_TASK_ID, EXP_CONTROL_PERIOD, FALSE))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_TASK_ID, EXP_CONTROL_PERIOD))  {
 		print_message(ERROR_MSG ,"ExpControl", "ExpControlRtTask", "rt_exp_control", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(EXP_CONTROL_TASK_NAME, EXP_CONTROL_TASK_PRIORITY, EXP_CONTROL_STACK_SIZE, EXP_CONTROL_MSG_SIZE,EXP_CONTROL_POLICY, 1 << task_cpuid))) {
 		print_message(ERROR_MSG ,"ExpControl", "ExpControlRtTask", "rt_exp_control", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_THREAD_ID, EXP_CONTROL_CPU_THREAD_TASK_ID, EXP_CONTROL_PERIOD, EXP_CONTROL_POSITIVE_JITTER_THRES, EXP_CONTROL_NEGATIVE_JITTER_THRES, EXP_CONTROL_RUN_TIME_THRES, "ExpControl", FALSE))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_TASK_ID, EXP_CONTROL_PERIOD, "ExpControl"))  {
 		print_message(ERROR_MSG ,"ExpControl", "ExpControlRtTask", "rt_exp_control", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	curr_time = rt_get_time_cpuid(task_cpuid);	
@@ -148,7 +146,7 @@ static void *rt_exp_control(void *args)
 		exp_ctrl_time_ns = rt_get_time_ns_cpuid(timer_cpuid);	// use system time
 
 		expected += period;
-		evaluate_and_save_jitter(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_THREAD_ID, EXP_CONTROL_CPU_THREAD_TASK_ID, curr_time, expected);
+		save_jitter(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_TASK_ID, prev_time, curr_time, period);
 		prev_time = curr_time;
 
 		// routines
@@ -167,13 +165,7 @@ static void *rt_exp_control(void *args)
 			print_message(ERROR_MSG ,"ExpControl", "ExpControlRtTask", "rt_exp_control", "! handle_trial_dur_handler_to_exp_control_msg()."); break; }
 		// routines	
 		execution_end = rt_get_time_cpuid(timer_cpuid);
-		evaluate_and_save_period_run_time(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_THREAD_ID, EXP_CONTROL_CPU_THREAD_TASK_ID, curr_time, execution_end);		
-		run_time_cntr++;
-		if (run_time_cntr == NUM_OF_TASK_EXECUTIONS_4_PERFOMANCE_EVAL)
-		{
-			run_time_cntr = 0;
-			write_run_time_to_averaging_buffer(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_THREAD_ID, EXP_CONTROL_CPU_THREAD_TASK_ID, curr_time, execution_end);	
-		}
+		save_run_time(static_rt_tasks_data, EXP_CONTROL_CPU_ID, EXP_CONTROL_CPU_TASK_ID, curr_time, execution_end);		
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);

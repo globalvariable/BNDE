@@ -79,19 +79,19 @@ static void *rt_dio_control(void *args)
 
 	unsigned int run_time_cntr = 0;
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
-	task_cpuid = (DIO_CONTROL_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+DIO_CONTROL_CPU_THREAD_ID;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
+	task_cpuid = (DIO_CONTROL_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
 	SEM *dio_ctrl_rx_buff_sem = NULL;
 	SEM *dio_ctrl_tx_buff_sem = NULL;
 	DioCtrlRxShm *dio_ctrl_rx_buff_shm = NULL;
 	DioCtrlTxShm *dio_ctrl_tx_buff_shm = NULL;
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_THREAD_ID, DIO_CONTROL_CPU_THREAD_TASK_ID, DIO_CONTROL_PERIOD, FALSE))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_TASK_ID, DIO_CONTROL_PERIOD))  {
 		print_message(ERROR_MSG ,"DioControl", "DioControlRtTask", "rt_dio_control", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(DIO_CONTROL_TASK_NAME, DIO_CONTROL_TASK_PRIORITY, DIO_CONTROL_STACK_SIZE, DIO_CONTROL_MSG_SIZE,DIO_CONTROL_POLICY, 1 << task_cpuid))) {
 		print_message(ERROR_MSG ,"DioControl", "DioControlRtTask", "rt_dio_control", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_THREAD_ID, DIO_CONTROL_CPU_THREAD_TASK_ID, DIO_CONTROL_PERIOD, DIO_CONTROL_POSITIVE_JITTER_THRES, DIO_CONTROL_NEGATIVE_JITTER_THRES, DIO_CONTROL_RUN_TIME_THRES, "DioControl", FALSE))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_TASK_ID, DIO_CONTROL_PERIOD, "DioControl"))  {
 		print_message(ERROR_MSG ,"DioControl", "DioControlRtTask", "rt_dio_control", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	// Initialization of semaphores should be done after initializing the rt task !!!!
@@ -123,7 +123,7 @@ static void *rt_dio_control(void *args)
 		dio_ctrl_time_ns = rt_get_time_ns_cpuid(timer_cpuid);	// use system time
 
 		expected += period;
-		evaluate_and_save_jitter(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_THREAD_ID, DIO_CONTROL_CPU_THREAD_TASK_ID, curr_time, expected);
+		save_jitter(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_TASK_ID, prev_time, curr_time, period);
 		prev_time = curr_time;
 
 		// routines
@@ -139,13 +139,7 @@ static void *rt_dio_control(void *args)
 			print_message(ERROR_MSG ,"DioControl", "DioControlRtTask", "rt_dio_control", "! handle_dio_ctrl_tx_shm()."); break; }
 		// routines	
 		execution_end = rt_get_time_cpuid(timer_cpuid);
-		evaluate_and_save_period_run_time(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_THREAD_ID, DIO_CONTROL_CPU_THREAD_TASK_ID, curr_time, execution_end);		
-		run_time_cntr++;
-		if (run_time_cntr == NUM_OF_TASK_EXECUTIONS_4_PERFOMANCE_EVAL)
-		{
-			run_time_cntr = 0;
-			write_run_time_to_averaging_buffer(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_THREAD_ID, DIO_CONTROL_CPU_THREAD_TASK_ID, curr_time, execution_end);	
-		}
+		save_run_time(static_rt_tasks_data, DIO_CONTROL_CPU_ID, DIO_CONTROL_CPU_TASK_ID, curr_time, execution_end);		
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);

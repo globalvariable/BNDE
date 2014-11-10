@@ -28,16 +28,16 @@ static void *rt_periodic_handler(void *args)
 
 	unsigned int timer_cpuid;
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
 	rt_set_oneshot_mode();
 //	rt_set_periodic_mode();
 
-	if (! check_rt_task_specs_to_init(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_THREAD_ID, SYSTIME_PERIODIC_CPU_THREAD_TASK_ID, SYSTIME_PERIODIC_PERIOD, TRUE))  {
+	if (! check_rt_task_specs_to_init(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_TASK_ID, SYSTIME_PERIODIC_PERIOD))  {
 		print_message(ERROR_MSG ,"PCIe6259", "RtTask", "rt_periodic_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
-        if (! (handler = rt_task_init_schmod(SYSTIME_PERIODIC_TASK_NAME, SYSTIME_PERIODIC_TASK_PRIORITY, SYSTIME_PERIODIC_STACK_SIZE, SYSTIME_PERIODIC_MSG_SIZE,SYSTIME_PERIODIC_POLICY, 1 << ((SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID)))) {
+        if (! (handler = rt_task_init_schmod(SYSTIME_PERIODIC_TASK_NAME, SYSTIME_PERIODIC_TASK_PRIORITY, SYSTIME_PERIODIC_STACK_SIZE, SYSTIME_PERIODIC_MSG_SIZE,SYSTIME_PERIODIC_POLICY, 1 << ((SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU))))) {
 		print_message(ERROR_MSG ,"PCIe6259", "RtTask", "rt_periodic_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_THREAD_ID, SYSTIME_PERIODIC_CPU_THREAD_TASK_ID, SYSTIME_PERIODIC_PERIOD, SYSTIME_PERIODIC_POSITIVE_JITTER_THRES, SYSTIME_PERIODIC_NEGATIVE_JITTER_THRES, SYSTIME_PERIODIC_RUN_TIME_THRES, "SystemTime", TRUE) ) {
+	if (! write_rt_task_specs_to_rt_tasks_data(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_TASK_ID, SYSTIME_PERIODIC_PERIOD, "SystemTime") ) {
 		print_message(ERROR_MSG ,"PCIe6259", "RtTask", "rt_periodic_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 
@@ -64,7 +64,7 @@ static void *rt_periodic_handler(void *args)
 
 
 		expected += period;
-		evaluate_and_save_jitter(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_THREAD_ID, SYSTIME_PERIODIC_CPU_THREAD_TASK_ID, curr_time, expected);
+		save_jitter(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_TASK_ID, prev_time, curr_time, period);
 		prev_time = curr_time;
 		//	routines are run below
 
@@ -72,7 +72,7 @@ static void *rt_periodic_handler(void *args)
 		// no routines. evalute run time.
 
 		// routines
-		evaluate_and_save_period_run_time(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_THREAD_ID, SYSTIME_PERIODIC_CPU_THREAD_TASK_ID, curr_time, rt_get_time_cpuid(timer_cpuid));
+		save_run_time(rt_tasks_data, SYSTIME_PERIODIC_CPU_ID, SYSTIME_PERIODIC_CPU_TASK_ID, curr_time, rt_get_time_cpuid(timer_cpuid));
 	}
 	print_message(INFO_MSG ,"PCIe6259", "RtTask", "rt_periodic_handler", "rt_sem_delete().");	
 	rt_make_soft_real_time();

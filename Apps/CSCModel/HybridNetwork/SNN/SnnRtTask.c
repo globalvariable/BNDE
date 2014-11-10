@@ -57,13 +57,11 @@ static void *snn_rt_handler(void *args)
 	TimeStamp spike_time;
 	bool spike_generated;
 
-	unsigned int cpu_id, cpu_thread_id, cpu_thread_task_id;
+	unsigned int cpu_id, cpu_task_id;
 	char task_name[10];
 	char task_num_name[4];
 
 	unsigned int i, timer_cpuid, task_cpuid;
-
-	unsigned int run_time_cntr = 0;
 
 	ProstheticCtrl2NeuralNetMsg *msgs_prosthetic_ctrl_2_neural_net;
 	ProstheticCtrl2NeuralNetMsgItem msg_item;
@@ -72,23 +70,22 @@ static void *snn_rt_handler(void *args)
 	double reward;
 	double sensory_reward;
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
 	cpu_id =  SNN_SIM_CPU_ID + task_num ;
-	cpu_thread_id = 0;
-	cpu_thread_task_id = 0;
+	cpu_task_id = 0;
 
-	task_cpuid = (cpu_id*MAX_NUM_OF_CPU_THREADS_PER_CPU)+cpu_thread_id;
+	task_cpuid = (cpu_id*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
 	strcpy(task_name, SNN_SIM_TASK_NAME);
 	sprintf(task_num_name, "%u", task_num );
 	strcat(task_name, task_num_name);
 
-	if (! check_rt_task_specs_to_init(rt_tasks_data, cpu_id, cpu_thread_id, cpu_thread_task_id, SNN_SIM_PERIOD, FALSE)) 
+	if (! check_rt_task_specs_to_init(rt_tasks_data, cpu_id, cpu_task_id, SNN_SIM_PERIOD)) 
 		return (void *)print_message(ERROR_MSG ,"CompetitiveLearning", "SnnRtTask", "snn_rt_handler", "! check_rt_task_specs_to_init().");
         if (! (handler = rt_task_init_schmod(nam2num(task_name), SNN_SIM_TASK_PRIORITY, SNN_SIM_STACK_SIZE, SNN_SIM_MSG_SIZE, SNN_SIM_POLICY, 1 << task_cpuid)))
 		return (void *)print_message(ERROR_MSG ,"CompetitiveLearning", "SnnRtTask", "snn_rt_handler", "handler = rt_task_init_schmod()."); 
-	if (! write_rt_task_specs_to_rt_tasks_data(rt_tasks_data, cpu_id, cpu_thread_id, cpu_thread_task_id, SNN_SIM_PERIOD, SNN_SIM_POSITIVE_JITTER_THRES, SNN_SIM_NEGATIVE_JITTER_THRES, SNN_SIM_RUN_TIME_THRES, "HybridNet", FALSE))
+	if (! write_rt_task_specs_to_rt_tasks_data(rt_tasks_data, cpu_id, cpu_task_id, SNN_SIM_PERIOD, "Snn"))
 		return (void *)print_message(ERROR_MSG ,"CompetitiveLearning", "SnnRtTask", "snn_rt_handler", "! write_rt_task_specs_to_rt_tasks_data()."); 
 
 
@@ -121,7 +118,7 @@ static void *snn_rt_handler(void *args)
 		current_snn_time = rt_get_time_ns_cpuid(timer_cpuid);	// use system time
 		
 		expected += period;
-		evaluate_and_save_jitter(rt_tasks_data, cpu_id, cpu_thread_id, cpu_thread_task_id, curr_time, expected);
+		save_jitter(rt_tasks_data, cpu_id, cpu_task_id, prev_time, curr_time, period);
 		prev_time = curr_time;
 		// routines
 		while (get_next_prosthetic_ctrl_2_neural_net_msg_buffer_item(msgs_prosthetic_ctrl_2_neural_net, &msg_item))		
@@ -202,13 +199,7 @@ static void *snn_rt_handler(void *args)
 		integration_start_time = integration_end_time;
 		// routines	
 		execution_end = rt_get_time_cpuid(timer_cpuid);
-		evaluate_and_save_period_run_time(rt_tasks_data, cpu_id, cpu_thread_id, cpu_thread_task_id, curr_time, execution_end);	
-		run_time_cntr++;
-		if (run_time_cntr == NUM_OF_TASK_EXECUTIONS_4_PERFOMANCE_EVAL)
-		{
-			run_time_cntr = 0;
-			write_run_time_to_averaging_buffer(rt_tasks_data, cpu_id, cpu_thread_id, cpu_thread_task_id, curr_time, execution_end);
-		}	
+		save_run_time(rt_tasks_data, cpu_id, cpu_task_id, curr_time, execution_end);	
 	}
 EXIT:
 	rt_make_soft_real_time();
@@ -231,14 +222,14 @@ static void *exp_ctrl_2_neural_net_msgs_handler(void *args)
 
 	unsigned int timer_cpuid, task_cpuid;
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
-	task_cpuid = (EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_ID;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
+	task_cpuid = (EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
-	if (! check_rt_task_specs_to_init(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_TASK_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_PERIOD, FALSE))  {
+	if (! check_rt_task_specs_to_init(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_TASK_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMI", "exp_ctrl_2_neural_net_msgs_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_TASK_NAME, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_TASK_PRIORITY, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_STACK_SIZE, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_MSG_SIZE, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_POLICY, 1 << task_cpuid))) {
 		print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMI", "exp_ctrl_2_neural_net_msgs_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_TASK_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_PERIOD, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_POSITIVE_JITTER_THRES, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_NEGATIVE_JITTER_THRES, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_RUN_TIME_THRES, "ExpCtrl2NeuralNet", FALSE))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_TASK_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_PERIOD, "ExpCtrl2NeuralNet"))  {
 		print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMI", "exp_ctrl_2_neural_net_msgs_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 
@@ -264,7 +255,7 @@ static void *exp_ctrl_2_neural_net_msgs_handler(void *args)
 		trial_2_nn_time_ns =  rt_get_time_ns_cpuid(timer_cpuid);	// use system time // it is not used now. 
 
 		expected += period;
-		evaluate_and_save_jitter(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_TASK_ID, curr_time, expected);
+		save_jitter(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_TASK_ID, prev_time, curr_time, period);
 		prev_time = curr_time;
 		// routines
 
@@ -349,7 +340,7 @@ static void *exp_ctrl_2_neural_net_msgs_handler(void *args)
 			}
 		}
 		// routines	
-		evaluate_and_save_period_run_time(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_time_cpuid(timer_cpuid));		
+		save_run_time(rt_tasks_data, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_ID, EXP_CTRL_2_NEURAL_NET_MSGS_HANDLER_CPU_TASK_ID, curr_time, rt_get_time_cpuid(timer_cpuid));			
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);

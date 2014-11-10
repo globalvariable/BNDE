@@ -72,14 +72,14 @@ static void *rt_dio_ctrl_duration_handler(void *args)
 	RTIME dio_ctrl_dur_hand_time_ns;
 	unsigned int timer_cpuid, task_cpuid;
 
-	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+SYSTIME_PERIODIC_CPU_THREAD_ID;
-	task_cpuid = (DIO_CTRL_DURATION_HANDLER_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU)+DIO_CTRL_DURATION_HANDLER_CPU_THREAD_ID;
+	timer_cpuid = (SYSTIME_PERIODIC_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
+	task_cpuid = (DIO_CTRL_DURATION_HANDLER_CPU_ID*MAX_NUM_OF_CPU_THREADS_PER_CPU);
 
-	if (! check_rt_task_specs_to_init(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_TASK_ID, DIO_CTRL_DURATION_HANDLER_PERIOD, FALSE))  {
+	if (! check_rt_task_specs_to_init(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID,  DIO_CTRL_DURATION_HANDLER_CPU_TASK_ID, DIO_CTRL_DURATION_HANDLER_PERIOD))  {
 		print_message(ERROR_MSG ,"BMIExpController", "DioCtrlDurationHandlerRtTask", "rt_dio_ctrl_duration_handler", "! check_rt_task_specs_to_init()."); exit(1); }	
         if (! (handler = rt_task_init_schmod(DIO_CTRL_DURATION_HANDLER_TASK_NAME, DIO_CTRL_DURATION_HANDLER_TASK_PRIORITY, DIO_CTRL_DURATION_HANDLER_STACK_SIZE, DIO_CTRL_DURATION_HANDLER_MSG_SIZE,DIO_CTRL_DURATION_HANDLER_POLICY, 1 << task_cpuid))) {
 		print_message(ERROR_MSG ,"BMIExpController", "DioCtrlDurationHandlerRtTask", "rt_dio_ctrl_duration_handler", "handler = rt_task_init_schmod()."); exit(1); }
-	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_TASK_ID, DIO_CTRL_DURATION_HANDLER_PERIOD, DIO_CTRL_DURATION_HANDLER_POSITIVE_JITTER_THRES, DIO_CTRL_DURATION_HANDLER_NEGATIVE_JITTER_THRES, DIO_CTRL_DURATION_HANDLER_RUN_TIME_THRES, "DioCtrlDurationHandler", FALSE))  {
+	if (! write_rt_task_specs_to_rt_tasks_data(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_TASK_ID, DIO_CTRL_DURATION_HANDLER_PERIOD, "DioCtrlDurationHandler"))  {
 		print_message(ERROR_MSG ,"BMIExpController", "DioCtrlDurationHandlerRtTask", "rt_dio_ctrl_duration_handler", "! write_rt_task_specs_to_rt_tasks_data()."); exit(1); }	
 
 	curr_time = rt_get_time_cpuid(task_cpuid);	
@@ -105,7 +105,7 @@ static void *rt_dio_ctrl_duration_handler(void *args)
 		dio_ctrl_dur_hand_time_ns = rt_get_time_ns_cpuid(timer_cpuid);	// use system time
 
 		expected += period;
-		evaluate_and_save_jitter(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_TASK_ID, curr_time, expected);
+		save_jitter(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_TASK_ID, prev_time, curr_time, period);
 		prev_time = curr_time;
 
 		// routines
@@ -114,7 +114,7 @@ static void *rt_dio_ctrl_duration_handler(void *args)
 		if (! handle_dio_control_duration(dio_ctrl_inputs_min_duration_status, dio_ctrl_inputs_max_duration_status, dio_ctrl_dur_hand_time_ns, inputs_handling_end_time_min, inputs_handling_end_time_max, num_of_input_components, static_msgs_dio_ctrl_dur_hand_2_dio_ctrl, num_of_output_components, dio_ctrl_outputs_duration_status, outputs_handling_end_time))  {
 			print_message(ERROR_MSG ,"BMIExpController", "DioCtrlDurationHandlerRtTask", "rt_dio_ctrl_duration_handler", "! handle_dio_control_duration()."); break; }
 		// routines	
-		evaluate_and_save_period_run_time(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_ID, DIO_CTRL_DURATION_HANDLER_CPU_THREAD_TASK_ID, curr_time, rt_get_time_cpuid(timer_cpuid));		
+		save_run_time(static_rt_tasks_data, DIO_CTRL_DURATION_HANDLER_CPU_ID, DIO_CTRL_DURATION_HANDLER_CPU_TASK_ID, curr_time, rt_get_time_cpuid(timer_cpuid));		
         }
 	rt_make_soft_real_time();
         rt_task_delete(handler);
