@@ -14,8 +14,6 @@
 #include "../NeuronDynamicsView/NeuronDynamicsView.h"
 #include "../BlueSpikeSpikePatternView/BlueSpikeSpikePatternView.h"
 #include "../InSilicoSpikePatternView/InSilicoSpikePatternView.h"
-#include "../StdpView/StdpView.h"
-#include "../EligibilityView/EligibilityView.h"
 #include "../WeightHistoryView/WeightHistoryView.h"
 #include "../AxonToLayerWeightView/AxonToLayerWeightView.h"
 

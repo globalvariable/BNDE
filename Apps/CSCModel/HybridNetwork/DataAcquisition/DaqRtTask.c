@@ -36,17 +36,12 @@ static void *rt_daq_handler(void *args)
 	long int cb_val = 0, cb_retval = 0;
 	lsampl_t daq_data[MAX_NUM_OF_CHANNEL_PER_DAQ_CARD*NUM_OF_SCAN];
 
-	RTIME max_execution = 0, execution;
-
 	unsigned int timer_cpuid;
 
 	int remaining_scan_cntr = 0, jitter_counter = 0, warning_amount = 10;
 
 	long ret = 0, ret_read = 0;
 
-	unsigned run_time_cntr = 0;
-
-	
 
 	comedi_insn insn;
 	lsampl_t insn_data[1];
