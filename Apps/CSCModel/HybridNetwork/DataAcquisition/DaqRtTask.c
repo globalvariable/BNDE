@@ -33,12 +33,13 @@ static void *rt_daq_handler(void *args)
         RTIME period;
         RTIME sync_step, diff, diff_thres;
 	unsigned int daq_num;
-	long int cb_val = 0, cb_retval = 0;
+	unsigned int cb_val = 0;
+	unsigned int cb_retval = 0;
 	lsampl_t daq_data[MAX_NUM_OF_CHANNEL_PER_DAQ_CARD*NUM_OF_SCAN];
 
 	unsigned int timer_cpuid;
 
-	int remaining_scan_cntr = 0, jitter_counter = 0, warning_amount = 10;
+	int remaining_scan_cntr = 0, jitter_counter = 0, warning_amount = 10, dummy_counter =  0;
 
 	long ret = 0, ret_read = 0;
 
@@ -102,10 +103,10 @@ static void *rt_daq_handler(void *args)
 	{
 		cb_val = 0;
 		cb_retval += rt_comedi_wait(&cb_val);
-
+	//	printf("%d\n", dummy_counter++);
 		if (cb_retval != 0)
 		{
-			printf ("cb_retval : %ld\n", cb_retval);
+			printf ("cb_retval : %u\n", cb_retval);
 			cb_retval = 0;
 		}
 
@@ -124,7 +125,7 @@ static void *rt_daq_handler(void *args)
 		{
 			curr_time += sync_step;  // sync
 		}
-
+		
 		if (diff > diff_thres) 
 			printf("-jitter\n"); 
 		if (diff < (-diff_thres)) 
@@ -152,11 +153,17 @@ static void *rt_daq_handler(void *args)
 			print_message(WARNING_MSG ,"HybridNetwork", "DaqRtTask", "rt_daq_handler", "! (cb_val & COMEDI_CB_EOS)."); 
 		}
 
+
+
 		rt_comedi_command_data_read(ni6259_comedi_dev[daq_num], COMEDI_SUBDEVICE_AI, MAX_NUM_OF_CHANNEL_PER_DAQ_CARD*NUM_OF_SCAN, daq_data);
+
+		// rt_comedi_get_buffer_contents was defined by me since there is bug in rt_comedi_command_data_read when it is used to see num of bytes acquired.
+
 		ret = rt_comedi_get_buffer_contents(ni6259_comedi_dev[daq_num], COMEDI_SUBDEVICE_AI);
 		if (ret >= (MAX_NUM_OF_CHANNEL_PER_DAQ_CARD*NUM_OF_SCAN*2))
 		{
 			remaining_scan_cntr++;
+			printf ("WARNING: %d\n", ret);
 		}
 
 

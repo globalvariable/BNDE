@@ -10,7 +10,7 @@ bool create_blue_spike_spike_pattern_view_gui(GtkWidget *tabs)
 	GtkWidget *frame, *frame_label, *vbox, *hbox;
 
         frame = gtk_frame_new ("");
-        frame_label = gtk_label_new ("     BlueSpike Spikes     ");      
+        frame_label = gtk_label_new ("     Biological Spikes     ");      
    
         gtk_notebook_append_page (GTK_NOTEBOOK (tabs), frame, frame_label);  
 

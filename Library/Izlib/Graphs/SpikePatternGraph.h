@@ -2,7 +2,7 @@
 #define SPIKE_PATTERN_GRAPH_H
 
 
-#define NUM_OF_GRID_MARKERS	9
+#define NUM_OF_GRID_MARKERS	10
 
 typedef struct __NetworkSpikePatternGraphScroll NetworkSpikePatternGraphScroll;
 typedef struct __NeuronSpikePatternGraphScroll NeuronSpikePatternGraphScroll;

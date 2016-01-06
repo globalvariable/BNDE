@@ -140,7 +140,7 @@ static void *snn_rt_handler(void *args)
 
 //						printf("rew = %.3f\n", reward);
 
-						update_synaptic_weights_all_neurons_in_thread(all_neurons, num_of_all_neurons, task_num, SNN_SIM_NUM_OF_DEDICATED_CPUS, reward, total_synaptic_weights);
+						update_synaptic_weights_all_neurons_in_thread(all_neurons, num_of_all_neurons, task_num, SNN_SIM_NUM_OF_DEDICATED_CPUS, reward, total_synaptic_weights, integration_start_time);
 
 					}
 					else	if (msg_item.additional_data.binary_reward_add.reward < 0)	// LTD
@@ -150,14 +150,14 @@ static void *snn_rt_handler(void *args)
 						sensory_reward = -1;
 						reward = reward_data.learning_rate *(1-reward_data.current_reward_prediction) * sensory_reward; 
 //						printf("rew = %.3f\n", reward);
-						update_synaptic_weights_all_neurons_in_thread(all_neurons, num_of_all_neurons, task_num, SNN_SIM_NUM_OF_DEDICATED_CPUS, reward, total_synaptic_weights);
+						update_synaptic_weights_all_neurons_in_thread(all_neurons, num_of_all_neurons, task_num, SNN_SIM_NUM_OF_DEDICATED_CPUS, reward, total_synaptic_weights, integration_start_time);
 					}		
 					else
 					{
 						sensory_reward = -1;
 						reward = reward_data.learning_rate *(1-reward_data.current_reward_prediction) * sensory_reward;  
 //						printf("rew = %.3f\n", reward);
-						update_synaptic_weights_all_neurons_in_thread(all_neurons, num_of_all_neurons, task_num, SNN_SIM_NUM_OF_DEDICATED_CPUS, reward, total_synaptic_weights);
+						update_synaptic_weights_all_neurons_in_thread(all_neurons, num_of_all_neurons, task_num, SNN_SIM_NUM_OF_DEDICATED_CPUS, reward, total_synaptic_weights, integration_start_time);
 					}	
 					break;	
 				case PROSTHETIC_CTRL_2_NEURAL_NET_MSG_START_TRIAL:
@@ -176,7 +176,7 @@ static void *snn_rt_handler(void *args)
 			for (i = task_num; i < num_of_all_neurons; i+=SNN_SIM_NUM_OF_DEDICATED_CPUS)  // simulate the neurons for which this thread is responsible
 			{
 				nrn = all_neurons[i];
-				if (! evaluate_neuron_dyn_pre_post_w_resetting_stdp_elig(nrn, time_ns, time_ns+PARKER_SOCHACKI_INTEGRATION_STEP_SIZE, &spike_generated, &spike_time)) {
+				if (! evaluate_neuron_dyn_pre_post_w_binary_stdp_elig(nrn, time_ns, time_ns+PARKER_SOCHACKI_INTEGRATION_STEP_SIZE, &spike_generated, &spike_time)) {
 					print_message(ERROR_MSG ,"HybridNetRLBMI", "HybridNetRLBMIRtTask", "snn_rt_handler", "! evaluate_neuron_dyn_pre_post_w_resetting_stdp_elig()."); exit(1); }	
 				if (spike_generated)
 				{
@@ -192,8 +192,6 @@ static void *snn_rt_handler(void *args)
 					}
 				}	
 				push_neuron_dynamics_to_neuron_dynamics_buffer_limited(in_silico_network, neuron_dynamics_limited_buffer, time_ns, i);
-				push_stdp_to_stdp_buffer_limited(in_silico_network, stdp_limited_buffer, time_ns, i);
-				push_eligibility_to_eligibility_buffer_limited(in_silico_network, eligibility_limited_buffer, time_ns, i);
 			}
 		}
 	

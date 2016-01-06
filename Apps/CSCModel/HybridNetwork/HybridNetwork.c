@@ -21,11 +21,14 @@ int main( int argc, char *argv[])
 	if (! start_periodic_task()) // to evaluate system clock
 		return print_message(ERROR_MSG ,"HybridNetwork", "HybridNetwork", "main","! start_periodic_task().");	
 
-	if (! connect_to_prosthetic_ctrl())
+/*	if (! connect_to_prosthetic_ctrl())
 		return print_message(ERROR_MSG ,"HybridNetwork", "HybridNetwork", "main","! connect_to_prosthetic_ctrl().");	
 
 	if (! connect_to_exp_ctrl())
 		return print_message(ERROR_MSG ,"HybridNetwork", "HybridNetwork", "main","! connect_to_prosthetic_ctrl().");	
+*/
+
+	printf ("%d\n", sizeof(sampl_t));
 
 	create_gui();
 	gtk_main();

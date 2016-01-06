@@ -155,11 +155,12 @@ void normalize_plastic_synaptic_weights(Network *in_silico_network, double weigh
 
 }
 
-void update_synaptic_weights_all_neurons_in_thread(Neuron **all_neurons, unsigned int num_of_all_neurons, unsigned int task_num, unsigned int num_of_dedicated_cpus, double reward, double total_synaptic_weights)
+void update_synaptic_weights_all_neurons_in_thread(Neuron **all_neurons, unsigned int num_of_all_neurons, unsigned int task_num, unsigned int num_of_dedicated_cpus, double reward, double total_synaptic_weights, RTIME current_time)
 {
 	unsigned int i, j;
 	Neuron *nrn;
 	Synapse			*synapses;
+	Synapse			*synapse;
 	SynapseIndex		num_of_synapses; 
 	double	E, dw;  // eligibility
 	double sum_weights, diff_weights;
@@ -175,19 +176,21 @@ void update_synaptic_weights_all_neurons_in_thread(Neuron **all_neurons, unsigne
 		max_weight = (total_synaptic_weights/num_of_synapses)*2.5;
 		for (j = 0; j < num_of_synapses; j++)
 		{
-			if (! synapses[j].plastic)
+			synapse = &(synapses[j]);
+			if (! synapse->plastic)
 				continue;
-			if (synapses[j].ps_eligibility->now > (exp(-1.0)*synapses[j].ps_eligibility->max_eligibility))
+			if ((synapse->ps_eligibility->last_set_time + synapse->ps_eligibility->duration) > current_time)
 				E = 1;
 			else
 				E = 0;
 			
 			dw = reward * E * synapses[j].weight;
-			synapses[j].weight+=dw;
-			if (synapses[j].weight > max_weight)
+			synapse->weight+=dw;
+			if (synapse->weight > max_weight)
 			{
-				synapses[j].weight = max_weight;
+				synapse->weight = max_weight;
 			}
+
 		}
 		sum_weights = 0;
 		for (j = 0; j < num_of_synapses; j++)

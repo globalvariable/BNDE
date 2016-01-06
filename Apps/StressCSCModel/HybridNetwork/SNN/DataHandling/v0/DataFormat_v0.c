@@ -554,11 +554,8 @@ static int create_main_meta_file(char *main_directory_path)
 					fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].plastic\t%u\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].plastic);
 					if (in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].plastic)
 					{
-						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_stdp_pre_post->change_amount\t%.15f\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_stdp_pre_post->change_amount);
-						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_stdp_pre_post->decay_rate\t%.15f\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_stdp_pre_post->decay_rate);
-						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->decay_rate\t%.15f\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_eligibility->decay_rate);
-						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->max_eligibility\t%.15f\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_eligibility->max_eligibility);
-						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->depol_eligibility\t%.15f\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_eligibility->depol_eligibility);
+						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_stdp_pre_post->duration\t%lld\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_stdp_pre_post->duration);
+						fprintf(fp,"in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->duration\t%lld\n", i, j, k, m, in_silico_network->layers[i]->neuron_groups[j]->neurons[k].syn_list->synapses[m].ps_eligibility->duration);
 					}
 				}
 			}		
@@ -1087,8 +1084,8 @@ static int load_main_meta_file(char *path_chooser, Network *in_silico_network, N
 	double weight;
 	bool plastic;
 	bool syn_type;
-	double change_stdp_pre_post, decay_rate_stdp_pre_post;
-	double eligibility_decay_rate, max_eligibility, depol_eligibility;
+	double stdp_duration;
+	double eligibility_duration;
 	bool first;
 	unsigned int randomize_params = 0;
 
@@ -1594,30 +1591,18 @@ static int load_main_meta_file(char *path_chooser, Network *in_silico_network, N
 
 					if (plastic)
 					{
-						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_stdp_pre_post->change_amount\t%.15f\n
+						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_stdp_pre_post->duration\t%.15f\n
 						if(!get_word_in_line('\t', 1, word, line, TRUE)) { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "!get_word_in_line."); }
-						change_stdp_pre_post = atof(word);		
+						stdp_duration = strtoll(word, &end_ptr, 10);		
 	
-						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_stdp_pre_post->decay_rate\t%.15f\n
+						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->duration\t%.15f\n
 						if(!get_word_in_line('\t', 1, word, line, TRUE)) { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "!get_word_in_line."); }
-						decay_rate_stdp_pre_post = atof(word);	
+						eligibility_duration = strtoll(word, &end_ptr, 10);			
 
-						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->decay_rate\t%.15f\n
-						if(!get_word_in_line('\t', 1, word, line, TRUE)) { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "!get_word_in_line."); }
-						eligibility_decay_rate = atof(word);	
-
-						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->max_eligibility\t%.15f\n
-						if(!get_word_in_line('\t', 1, word, line, TRUE)) { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "!get_word_in_line."); }
-						max_eligibility = atof(word);	
-
-						if (fgets(line, sizeof line, fp ) == NULL)   { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "fgets() == NULL."); }  // in_silico_network->layers[%u]->neuron_groups[%u]->neurons[%u].syn_list->synapses[%u].ps_eligibility->depol_eligibility\t%.15f\n
-						if(!get_word_in_line('\t', 1, word, line, TRUE)) { fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "!get_word_in_line."); }
-						depol_eligibility = atof(word);	
-
-						if (! create_ps_pre_post_stdp_for_synapse(this_neuron , change_stdp_pre_post, change_stdp_pre_post, -1.0/decay_rate_stdp_pre_post, -1.0/decay_rate_stdp_pre_post, m))
+						if (! create_ps_pre_post_stdp_for_synapse(this_neuron , stdp_duration, m))
  							{ fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "! create_ps_pre_post_stdp_for_synapse."); }
 
-						if (! create_ps_eligibility_for_synapse(this_neuron, -1.0/eligibility_decay_rate, -1.0/eligibility_decay_rate, m, max_eligibility, max_eligibility, depol_eligibility, depol_eligibility))
+						if (! create_ps_eligibility_for_synapse(this_neuron, eligibility_duration, m))
  							{ fclose(fp); return print_message(ERROR_MSG ,"HybridNetwork", "DataFormat_v0", "load_main_meta_file", "! create_ps_pre_post_stdp_for_synapse."); }
 					}
 				}

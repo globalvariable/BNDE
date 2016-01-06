@@ -8,7 +8,7 @@ void create_gui(void)
 
  	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-  	gtk_window_set_default_size(GTK_WINDOW(window), 1920, 1020);
+  	gtk_window_set_default_size(GTK_WINDOW(window), 1820, 920);
   	gtk_window_set_deletable(GTK_WINDOW(window), FALSE);
   	gtk_window_set_title(GTK_WINDOW(window), "HybridNetwork");
   	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
@@ -36,5 +36,5 @@ void create_gui(void)
 
 	gtk_widget_show_all(window);
 
-
+  	gtk_window_set_deletable(GTK_WINDOW(window), FALSE);
 }

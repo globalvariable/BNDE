@@ -18,7 +18,7 @@ bool create_neuron_dynamics_view_gui(GtkWidget *tabs)
 	unsigned int i;
 	GtkWidget *frame, *frame_label, *vbox, *vbox1, *hbox, *hbox1;
         frame = gtk_frame_new ("");
-        frame_label = gtk_label_new ("     Neuron Dynamics     ");      
+        frame_label = gtk_label_new ("     In Silico Neuron Dynamics     ");      
    
         gtk_notebook_append_page (GTK_NOTEBOOK (tabs), frame, frame_label);  
 

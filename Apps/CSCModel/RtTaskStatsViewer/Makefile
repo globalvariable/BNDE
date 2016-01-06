@@ -13,7 +13,7 @@ GTK_FLAGS = $(shell pkg-config --cflags --libs gtk+-2.0 gtkdatabox)
 all: RtTaskStatsViewer
 
 RtTaskStatsViewer: RtTaskStatsViewer.c ../../../Library/Misc/Misc.o 
-	$(CC) $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) -o $@ $< ../../../Library/Misc/Misc.o 
+	$(CC)  -o $@ $< $(LXRT_CFLAGS) $(LXRT_LDFLAGS) $(MATH_FLAGS) $(GTK_FLAGS) ../../../Library/Misc/Misc.o 
 
 ../../../Library/Misc/Misc.o: ../../../Library/Misc/Misc.c
 	$(CC) $(LXRT_CFLAGS) -c -o $@ $< $(LXRT_LDFLAGS) $(GTK_FLAGS)			### ../../Library/Misc/Misc
