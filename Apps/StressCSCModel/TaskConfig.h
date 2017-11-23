@@ -105,7 +105,7 @@
 // InSilicoSimulators
 #define SNN_SIM_PERIOD						2000000		//1 ms
 #define SNN_SIM_TASK_NAME					"SNN"
-#define SNN_SIM_TASK_PRIORITY				202
+#define SNN_SIM_TASK_PRIORITY				2	// it was 202 before. with that value, max task run time was around 2.5 ms for 150+2 MSNs full double integration precision accuracy. Then, set the task priority value to 2 and max task run time is around 0.75 ms with 150+2 MSNs and full double integration precision accuracy.
 #define SNN_SIM_STACK_SIZE 					10000
 #define SNN_SIM_MSG_SIZE 					1000
 #define SNN_SIM_POLICY 						SCHED_FIFO

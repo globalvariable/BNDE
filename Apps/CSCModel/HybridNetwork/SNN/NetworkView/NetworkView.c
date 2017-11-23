@@ -543,7 +543,7 @@ bool create_network_view_gui(GtkWidget *tabs)
   	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	btn_connect_internal_layer_to_internal_layer = gtk_button_new_with_label("Connect Internal Layer");
+	btn_connect_internal_layer_to_internal_layer = gtk_button_new_with_label("Connect Int. Layer");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_connect_internal_layer_to_internal_layer, FALSE, FALSE, 0);
         entry_internal_layer_num_to_connect= gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_internal_layer_num_to_connect, FALSE,FALSE,0);
@@ -697,7 +697,7 @@ bool create_network_view_gui(GtkWidget *tabs)
   	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	btn_connect_external_layer_to_internal_layer = gtk_button_new_with_label("Connect External Layer");
+	btn_connect_external_layer_to_internal_layer = gtk_button_new_with_label("Connect Ext. Layer");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_connect_external_layer_to_internal_layer, FALSE, FALSE, 0);
         entry_external_layer_num_to_connect= gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_external_layer_num_to_connect, FALSE,FALSE,0);

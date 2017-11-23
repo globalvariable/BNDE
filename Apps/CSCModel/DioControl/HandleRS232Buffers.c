@@ -225,6 +225,7 @@ bool handle_dio_ctrl_rx_shm(DioCtrlData *dio_ctrl_data, TimeStamp current_time, 
 
 	if (dio_ctrl_rs232_status_prev.ir_beam != dio_ctrl_rs232_status->ir_beam)
 	{
+//		printf ("CHANGE IR_BEAM\n");
 		dio_ctrl_rs232_status_prev.ir_beam = dio_ctrl_rs232_status->ir_beam;
 
 		if (dio_ctrl_rs232_status->ir_beam)
@@ -284,6 +285,8 @@ bool handle_dio_ctrl_rx_shm(DioCtrlData *dio_ctrl_data, TimeStamp current_time, 
 
 	if (dio_ctrl_rs232_status_prev.ir_beam_2 != dio_ctrl_rs232_status->ir_beam_2)
 	{
+//		printf ("CHANGE IR_BEAM_2\n");
+
 		dio_ctrl_rs232_status_prev.ir_beam_2 = dio_ctrl_rs232_status->ir_beam_2;
 
 		if (dio_ctrl_rs232_status->ir_beam_2)

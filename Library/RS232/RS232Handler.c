@@ -217,7 +217,7 @@ bool read_from_rs232_com1(unsigned char *msg, unsigned int msg_size)  // mov obj
 	int rx_num_of_chars_remaining;
 	rx_num_of_chars_remaining = rt_spread(COM1, (char*) msg, (int)msg_size);
 	if (rx_num_of_chars_remaining != 0)
-		return print_message(ERROR_MSG ,"DioControls", "RS232Handler", "write_to_rs232_com1", "rx_num_of_chars_remaining != 0.");
+		return print_message(ERROR_MSG ,"DioControls", "RS232Handler", "read_from_rs232_com1", "rx_num_of_chars_remaining != 0.");
 	return TRUE;	
 }
 

@@ -543,7 +543,7 @@ bool create_network_view_gui(GtkWidget *tabs)
   	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	btn_connect_internal_layer_to_internal_layer = gtk_button_new_with_label("Connect Internal Layer");
+	btn_connect_internal_layer_to_internal_layer = gtk_button_new_with_label("Connect Int. Layer");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_connect_internal_layer_to_internal_layer, FALSE, FALSE, 0);
         entry_internal_layer_num_to_connect= gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_internal_layer_num_to_connect, FALSE,FALSE,0);
@@ -697,7 +697,7 @@ bool create_network_view_gui(GtkWidget *tabs)
   	hbox = gtk_hbox_new(FALSE, 0);
         gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	btn_connect_external_layer_to_internal_layer = gtk_button_new_with_label("Connect External Layer");
+	btn_connect_external_layer_to_internal_layer = gtk_button_new_with_label("Connect Ext. Layer");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_connect_external_layer_to_internal_layer, FALSE, FALSE, 0);
         entry_external_layer_num_to_connect= gtk_entry_new();
         gtk_box_pack_start(GTK_BOX(hbox), entry_external_layer_num_to_connect, FALSE,FALSE,0);
@@ -1353,6 +1353,9 @@ static void submit_learning_rate_button_func (void)
 		return (void)print_message(ERROR_MSG ,"HybridNetwork", "NetworkView", "submit_learning_rate_button_func", "learning_rate <= 0.");
 
 	reward_data.learning_rate = learning_rate;
+
+//	printf ("reward_data.learning_rate = %f\n", reward_data.learning_rate);
+//	printf ("%s\n", gtk_entry_get_text(GTK_ENTRY(entry_learning_rate)));
 
 	gtk_widget_set_sensitive(btn_submit_total_synaptic_weights, TRUE);
 }

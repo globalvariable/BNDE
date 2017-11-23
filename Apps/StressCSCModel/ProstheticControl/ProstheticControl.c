@@ -3,24 +3,25 @@
 static pthread_t logging_thread;
 void *logging_thread_function( void *message_log );
 
-#define BASE_SERVO_0_DEGREE_PULSE		2090
-#define BASE_SERVO_90_DEGREE_PULSE		1544
-#define BASE_SERVO_0_DEGREE_ADC_VAL		60
-#define BASE_SERVO_90_DEGREE_ADC_VAL	465
+#define BASE_SERVO_0_DEGREE_PULSE		2104
+#define BASE_SERVO_90_DEGREE_PULSE		1537
+#define BASE_SERVO_0_DEGREE_ADC_VAL		35
+#define BASE_SERVO_90_DEGREE_ADC_VAL	310
 
-#define SHOULDER_SERVO_0_DEGREE_PULSE		958
-#define SHOULDER_SERVO_90_DEGREE_PULSE		1434
-#define SHOULDER_SERVO_0_DEGREE_ADC_VAL	222
-#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	349
+#define SHOULDER_SERVO_0_DEGREE_PULSE		2160
+#define SHOULDER_SERVO_90_DEGREE_PULSE		1585
+#define SHOULDER_SERVO_0_DEGREE_ADC_VAL		546
+#define SHOULDER_SERVO_90_DEGREE_ADC_VAL	287
 
-#define ELBOW_SERVO_0_DEGREE_PULSE		914
-#define ELBOW_SERVO_90_DEGREE_PULSE		1394
-#define ELBOW_SERVO_0_DEGREE_ADC_VAL	227
-#define ELBOW_SERVO_90_DEGREE_ADC_VAL	353
+#define ELBOW_SERVO_0_DEGREE_PULSE		1000
+#define ELBOW_SERVO_90_DEGREE_PULSE		1484
+#define ELBOW_SERVO_0_DEGREE_ADC_VAL	179
+#define ELBOW_SERVO_90_DEGREE_ADC_VAL	267
 
 #define BASE_SERVO_INIT_PULSE				BASE_SERVO_90_DEGREE_PULSE   
-#define SHOULDER_SERVO_INIT_PULSE		1531
-#define ELBOW_SERVO_INIT_PULSE			1444
+#define SHOULDER_SERVO_INIT_PULSE		1680
+#define ELBOW_SERVO_INIT_PULSE			1494
+
 
 int main( int argc, char *argv[])
 {
@@ -44,7 +45,7 @@ int main( int argc, char *argv[])
 	prosthetic_ctrl_paradigm = g_new0(ProstheticCtrlParadigmRobotReach, 1);
 
 	init_three_dof_robot_arm(robot_arm);
-	submit_arm_length_vals(robot_arm, 14.60, 19.4, 1.1);
+	submit_arm_length_vals(robot_arm, 14.60, 19.4, 2.1);
 	submit_arm_security_limits(robot_arm, -19.0, 20.0, -20.0, 20.0, 3.0, 35.0, (M_PI*0.0)/12.0, (M_PI*12.0)/12.0, -(M_PI*0.5)/12.0, (M_PI*12.0)/12.0,  (M_PI*0.0)/12.0, (M_PI*12.0)/12.0);
 	if (! submit_cartesian_robotic_space_borders(robot_arm, prosthetic_ctrl_paradigm, -18.0, 15.5, -19.0, 19.0, 4.0, 34.0))
 		return print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControl", "main", "! submit_cartesian_robotic_space_borders().");
@@ -60,7 +61,8 @@ int main( int argc, char *argv[])
 	init_servo_pulse(&(robot_arm->servos[ELBOW_SERVO]), ELBOW_SERVO_INIT_PULSE);
 
 	init_servo_angles_for_sample_averaging(&(robot_arm->servos[BASE_SERVO]), ((BASE_SERVO_INIT_PULSE-BASE_SERVO_0_DEGREE_PULSE)/(BASE_SERVO_90_DEGREE_PULSE-BASE_SERVO_0_DEGREE_PULSE))*M_PI_2, 4);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
-	init_servo_angles_for_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), ((SHOULDER_SERVO_INIT_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE)/(SHOULDER_SERVO_90_DEGREE_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE))*M_PI_2, 4);
+	init_servo_angles_for_sample_averaging(&(robot_arm->servos[SHOULDER_SERVO]), M_PI-((SHOULDER_SERVO_INIT_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE)/(SHOULDER_SERVO_90_DEGREE_PULSE-SHOULDER_SERVO_0_DEGREE_PULSE))*M_PI_2, 4);
+	// added 'M_PI -' into the second parameter of the above function since digital servo for shoulder has opposite potentiometer values compared to analog servo (Hitech HS-5805MG vs Hitech HS-805BB) 
 	init_servo_angles_for_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), ((ELBOW_SERVO_INIT_PULSE-ELBOW_SERVO_0_DEGREE_PULSE)/(ELBOW_SERVO_90_DEGREE_PULSE-ELBOW_SERVO_0_DEGREE_PULSE))*M_PI_2, 4);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
 
 	init_servo_spike_count_memo(&(robot_arm->servos[BASE_SERVO]), 4);

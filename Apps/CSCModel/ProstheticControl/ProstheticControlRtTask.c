@@ -56,6 +56,8 @@ bool create_prosthetic_control_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRob
 
 	static_message_log = message_log;
 
+
+
 	msgs_exp_ctrl_2_prosthetic_ctrl = allocate_shm_server_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl);
 	msgs_neural_net_2_prosthetic_ctrl_multi_thread = allocate_shm_server_neural_net_2_prosthetic_ctrl_multi_thread_msg_buffer(msgs_neural_net_2_prosthetic_ctrl_multi_thread, SNN_SIM_NUM_OF_DEDICATED_CPUS);
 	msgs_prosthetic_ctrl_2_neural_net_multi_thread = g_new0(ProstheticCtrl2NeuralNetMsg*, SNN_SIM_NUM_OF_DEDICATED_CPUS); 
@@ -72,6 +74,8 @@ bool create_prosthetic_control_rt_thread(RtTasksData *rt_tasks_data, ThreeDofRob
 	msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand = allocate_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand);
 
 	scheduled_spike_data = allocate_spike_data(scheduled_spike_data, NEURAL_NET_2_PROSTHETIC_CTRL_MSG_BUFF_SIZE);
+
+
 
 	if (prosthetic_control_rt_thread !=0)
 		return print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "create_prosthetic_control_rt_thread", "CANNOT create rt_thread again.");	
@@ -121,6 +125,8 @@ static void *rt_prosthetic_control(void *args)
 
 	prev_time = curr_time;
 	expected = curr_time + period;
+
+
 
 	// Initialization of semaphores should be done after initializing the rt task !!!!
 	if (! init_rs232_buffers(static_robot_arm, &dio_ctrl_rx_buff_sem, &dio_ctrl_tx_buff_sem, &dio_ctrl_rx_buff_shm, &dio_ctrl_tx_buff_shm,  prosthetic_ctrl_time_ns))  {

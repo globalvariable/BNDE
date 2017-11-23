@@ -54,7 +54,7 @@ bool run_template_matching(int mwa, int chan, int interpolated_data_buff_idx, Ti
 			{
 				template_matching_g_x[unit] = template_matching_g_x[unit] + (template_matching_diff_temporary[i] * template_matching_diff[i]);
 			}
-			template_matching_exponent = exp((-0.5)*template_matching_g_x[unit]);
+			template_matching_exponent = expf((-0.5)*template_matching_g_x[unit]);
 			template_matching_probabl[unit] = (1.06488319787324016356e-12/unit_template_data->sqrt_det_S)*template_matching_exponent;       //   ( 1/ (   ((2*pi)^(d/2)) * (det_S^(1/2)) ) * exp( (-1/2) * (x-u)' * (S^ (-1)) - (x-u) )   d= 30
 
 			template_matching_g_x[unit] = 0 - (unit_template_data->log_det_S) - (template_matching_g_x[unit]);	
