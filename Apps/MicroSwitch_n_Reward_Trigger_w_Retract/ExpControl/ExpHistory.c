@@ -1,0 +1,135 @@
+#include "ExpHistory.h"
+
+
+
+ExpHistory* allocate_trial_history(ExpHistory* hist, unsigned int buffer_size)
+{
+	if (hist != NULL)
+	{
+		hist = deallocate_trial_history(hist);
+		hist = allocate_trial_history(hist, buffer_size);
+		return hist;
+	}  
+	hist = g_new0(ExpHistory,1);
+	hist->history = g_new0(ExpData, buffer_size);
+	hist->buffer_size = buffer_size;	
+	print_message(INFO_MSG ,"ExperimentHandler", "ExpData", "allocate_trials_history", "Created trials_history.");
+	return hist;
+
+} 
+
+ExpHistory* deallocate_trial_history(ExpHistory* hist)
+{
+	if (hist == NULL)
+		return (ExpHistory*)print_message(BUG_MSG ,"ExperimentHandler", "ExpData", "deallocate_trials_history", "trials_history == NULL.");    
+	g_free(hist->history);
+	g_free(hist);
+	print_message(INFO_MSG ,"ExpControllers", "ExpsData", "deallocate_trials_data", "Destroyed trials_data.");
+	return NULL;
+}
+
+ClassifiedExpHistory* allocate_classified_trial_history(ClassifiedExpHistory* classified_hist, unsigned int buffer_size, unsigned int num_of_target_positions)
+{
+	unsigned int i;
+	if (classified_hist != NULL)
+	{
+		classified_hist = deallocate_classified_trial_history(classified_hist);
+		classified_hist = allocate_classified_trial_history(classified_hist, buffer_size, num_of_target_positions);
+		return classified_hist;
+	}  
+	classified_hist = g_new0(ClassifiedExpHistory,1);
+
+	classified_hist->all_trials = allocate_trial_history(classified_hist->all_trials, buffer_size);
+
+	classified_hist->trial_types = g_new0(ExpHistory*, num_of_target_positions);
+	for (i = 0; i < num_of_target_positions; i++)
+	{
+		classified_hist->trial_types[i] = allocate_trial_history(classified_hist->trial_types[i], buffer_size);
+	}
+
+	classified_hist->num_of_target_positions = num_of_target_positions;	
+
+	print_message(INFO_MSG ,"ExperimentHandler", "ExpData", "allocate_classified_trial_history", "Created classified_trials_history.");
+	return classified_hist;	
+
+}
+ClassifiedExpHistory* deallocate_classified_trial_history(ClassifiedExpHistory* classified_hist)
+{
+	unsigned int i;
+	if (classified_hist == NULL)
+		return (ClassifiedExpHistory*)print_message(BUG_MSG ,"ExperimentHandler", "ExpData", "deallocate_classified_trial_history", "classified_trials_history == NULL.");    
+
+	classified_hist->all_trials = deallocate_trial_history(classified_hist->all_trials);
+	for (i = 0; i < classified_hist->num_of_target_positions; i++)
+	{
+		classified_hist->trial_types[i] = deallocate_trial_history(classified_hist->trial_types[i]);
+	}
+	g_free(classified_hist->trial_types);
+
+
+	g_free(classified_hist);
+
+	print_message(BUG_MSG ,"ExpControllers", "ExpsData", "deallocate_trials_data", "Destroyed trials_data.");
+	return NULL;	
+}
+
+bool write_trial_data_to_classified_trial_history(ClassifiedExpHistory* classified_history, ExpData *trial_data)
+{
+	ExpHistory *dest_history_data;
+	ExpData *curr_trial_data;
+	ExpData *prev_trial_data;
+
+ 	dest_history_data = classified_history->all_trials;
+	curr_trial_data = &(dest_history_data->history[dest_history_data->buff_write_idx]);
+	memcpy(curr_trial_data, trial_data, sizeof(ExpData));
+	prev_trial_data = get_previous_trial_history_data_ptr(dest_history_data, 1);
+	curr_trial_data->num_of_trials = prev_trial_data->num_of_trials+1;
+	curr_trial_data->success_ratio = (((double)prev_trial_data->num_of_trials * prev_trial_data->success_ratio) + (double)curr_trial_data->binary_reward) / (double)curr_trial_data->num_of_trials;
+	if (curr_trial_data->trial_incomplete)
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials + 1;
+	else
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials;
+	if ((dest_history_data->buff_write_idx+1) == dest_history_data->buffer_size)
+	{
+		dest_history_data->buff_write_idx = 0;
+		print_message(WARNING_MSG ,"ExperimentHandler", "ExpData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL, circular buffer gets to the 0th idx to write.!!.");    	
+	}
+	else
+	{
+		dest_history_data->buff_write_idx++;
+	}
+
+
+ 	dest_history_data = classified_history->trial_types[trial_data->robot_target_position_idx];
+	curr_trial_data = &(dest_history_data->history[dest_history_data->buff_write_idx]);
+	memcpy(curr_trial_data, trial_data, sizeof(ExpData));
+	prev_trial_data = get_previous_trial_history_data_ptr(dest_history_data, 1);
+	curr_trial_data->num_of_trials = prev_trial_data->num_of_trials+1;
+	curr_trial_data->success_ratio = (((double)prev_trial_data->num_of_trials * prev_trial_data->success_ratio) + (double)curr_trial_data->binary_reward) / (double)curr_trial_data->num_of_trials;
+	if (curr_trial_data->trial_incomplete)
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials + 1;
+	else
+		curr_trial_data->num_of_incomplete_trials = prev_trial_data->num_of_incomplete_trials;
+	if ((dest_history_data->buff_write_idx+1) == dest_history_data->buffer_size)
+	{
+		dest_history_data->buff_write_idx = 0;
+		print_message(WARNING_MSG ,"ExperimentHandler", "ExpData", "write_trial_data_to_classified_trial_history", "classified_history->all_trials->buffer is FULL, circular buffer gets to the 0th idx to write.!!.");    	
+	}
+	else
+	{
+		dest_history_data->buff_write_idx++;
+	}
+
+	return TRUE;
+}
+
+ExpData* get_previous_trial_history_data_ptr(ExpHistory* hist, unsigned int prev_idx)	// prev_idx zero brings the current trial data. 
+{
+	int idx = hist->buff_write_idx;
+	if (idx < prev_idx)
+		idx = hist->buffer_size + idx - prev_idx;
+	else
+		idx = idx - prev_idx;
+	return &(hist->history[idx]);
+}
+
