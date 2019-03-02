@@ -83,6 +83,8 @@ void evaluate_servo_pw_command_with_limitation(ServoData *servo_data, double deg
 void evaluate_servo_pw_command_with_limitation_and_threshold(ServoData *servo_data, double degree_limitation, double degree_threshold);
 bool evaluate_servo_pw_command_with_target_reach_feedback(ServoData *servo_data);
 void evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing(ServoData *servo_data, double degree_limitation, double threshold, double bias_2_increase);
+void evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized(ServoData *servo_data, double degree_limitation, double threshold_left, double threshold_right, double bias_2_decrease, double bias_2_increase, double bias_constant_decrease, double bias_constant_increase);
+void evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized_one_side(ServoData *servo_data, double degree_limitation, double threshold_2_decrease, double threshold_2_increase, double bias_2_decrease, double bias_2_increase, double bias_constant_2_decrease, double bias_constant_2_increase, bool only_decrease, bool only_increase);
 void evaluate_servo_pw_command_via_spike_count_with_limitation_count_thresholding(ServoData *servo_data, double degree_limitation, double threshold);
 void get_servo_pw_val_bytes(ServoData *servo_data, unsigned char *low_byte, unsigned char *high_byte);
 void get_servo_position_val(ServoData *servo_data, ServoPosition *servo_position);

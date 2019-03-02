@@ -20,6 +20,7 @@ typedef unsigned int DioCtrl2ExpCtrlMsgAdditional;
 #define DIO_CTRL_2_EXP_CTRL_MSG_NOSE_POKE_EVENT				6
 #define DIO_CTRL_2_EXP_CTRL_MSG_NOSE_RETRACT_EVENT			7
 #define DIO_CTRL_2_EXP_CTRL_MSG_RESTRAIN_RELEASE_REQ			8
+#define DIO_CTRL_2_EXP_CTRL_MSG_LEVER_RELEASE				9
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

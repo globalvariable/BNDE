@@ -28,7 +28,7 @@ bool handle_prosthetic_control_to_exp_control_msg(TimeStamp current_time)
 	while (get_next_prosthetic_ctrl_2_exp_ctrl_msg_buffer_item(msgs_prosthetic_ctrl_2_exp_ctrl, &msg_item))
 	{
 		get_prosthetic_ctrl_2_exp_ctrl_msg_type_string(msg_item.msg_type, str_prosthetic_ctrl_msg);
-//		print_message(INFO_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_prosthetic_control_to_exp_control_msg", str_prosthetic_ctrl_msg);
+		print_message(INFO_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_prosthetic_control_to_exp_control_msg", str_prosthetic_ctrl_msg);
 		switch (msg_item.msg_type)
 		{
 			case PROSTHETIC_CTRL_2_EXP_CTRL_MSG_REWARD_REQUEST:	// Mov Obj send this out whether when it reaches target or threshold depending on its programming

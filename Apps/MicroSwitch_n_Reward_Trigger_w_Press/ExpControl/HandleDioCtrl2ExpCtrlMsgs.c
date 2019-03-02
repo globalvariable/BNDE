@@ -28,7 +28,7 @@ bool handle_dio_control_to_exp_control_msg(TimeStamp current_time)
 	while (get_next_dio_ctrl_2_exp_ctrl_msg_buffer_item(msgs_dio_ctrl_2_exp_ctrl, &msg_item))
 	{
 		get_dio_ctrl_2_exp_ctrl_msg_type_string(msg_item.msg_type, str_dio_ctrl_msg);
-//		print_message(INFO_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", str_dio_ctrl_msg);
+		print_message(INFO_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", str_dio_ctrl_msg);
 		switch (msg_item.msg_type)
 		{
 			case DIO_CTRL_2_EXP_CTRL_MSG_START_TRIAL_REQUEST:	
@@ -70,9 +70,9 @@ bool handle_dio_control_to_exp_control_msg(TimeStamp current_time)
 						exp_ctrl_to_neural_net_msg_add.difficulty_reward_predict_add.difficulty_level = paradigm->current_trial_data.difficulty_level;  // determined when trial ends according to robot start position
 						exp_ctrl_to_neural_net_msg_add.difficulty_reward_predict_add.reward_prediction = paradigm->current_trial_data.reward_prediction;
 
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_START, exp_ctrl_to_neural_net_msg_add))
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_START, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
-*/
+
 						if (!write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_GET_READY_TO_START))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
 						if (! write_to_trial_status_history(trial_status_history, current_time, TRIAL_STATUS_GET_READY_TO_START))
@@ -162,13 +162,13 @@ bool handle_dio_control_to_exp_control_msg(TimeStamp current_time)
 
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, exp_ctrl_to_neural_net_msg_add))
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
-*/
+
 						exp_ctrl_to_neural_net_msg_add.dummy = 0;
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING, exp_ctrl_to_neural_net_msg_add))
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
-*/
+
 						break;  
 					case TRIAL_STATUS_IN_REFRACTORY:
 						break;   // do nothing
@@ -216,13 +216,13 @@ bool handle_dio_control_to_exp_control_msg(TimeStamp current_time)
 
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, exp_ctrl_to_neural_net_msg_add))
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
-*/
+
 						exp_ctrl_to_neural_net_msg_add.dummy = 0;
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING, exp_ctrl_to_neural_net_msg_add))
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
-*/
+
 						break;   // do nothing
 
 					default:
@@ -232,6 +232,31 @@ bool handle_dio_control_to_exp_control_msg(TimeStamp current_time)
 				}
 				break;
 
+			case DIO_CTRL_2_EXP_CTRL_MSG_REWARD_REQUEST:	
+				switch (*trial_status)
+				{
+					case TRIAL_STATUS_TRIALS_DISABLED:
+						if (!write_to_exp_ctrl_2_dio_ctrl_msg_buffer(msgs_exp_ctrl_2_dio_ctrl, current_time, EXP_CTRL_2_DIO_CTRL_MSG_RELEASE_REWARD, 0))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_prosthetic_control_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
+						break;   // do nothing
+					case TRIAL_STATUS_IN_TRIAL:
+						break;   // do nothing
+					case TRIAL_STATUS_IN_REFRACTORY:
+						break;   // do nothing
+					case TRIAL_STATUS_GET_READY_TO_START:	
+						break;   // do nothing
+					case TRIAL_STATUS_START_TRIAL_AVAILABLE:	
+						if (!write_to_exp_ctrl_2_dio_ctrl_msg_buffer(msgs_exp_ctrl_2_dio_ctrl, current_time, EXP_CTRL_2_DIO_CTRL_MSG_RELEASE_REWARD, 0))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_prosthetic_control_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
+
+
+						break; 
+					default:
+						print_message(BUG_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", str_dio_ctrl_msg);
+						get_trial_status_type_string(*trial_status, str_status);   
+						return print_message(BUG_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", str_status);
+				}
+				break;
 
 			default:
 				return print_message(BUG_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", str_dio_ctrl_msg);	

@@ -19,6 +19,7 @@ typedef struct
 	unsigned int				num_of_target_led_components;
 	unsigned int				num_of_difficulty_levels;
 	TimeStamp				*max_trial_length;			// num of difficulty levels
+	TimeStamp				trial_length_diff_btw_difficulty_levels;			// num of difficulty levels
 	TimeStamp				trial_refractory;	
 	EllipsoidThreshold			min_target_reach_threshold;
 	TimeStamp				get_ready_to_trial_start_length;	

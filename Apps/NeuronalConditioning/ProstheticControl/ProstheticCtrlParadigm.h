@@ -26,6 +26,11 @@ ProstheticCtrlThreshold;
 typedef struct 
 {
 	double						left_spike_multiplier;
+	double						right_spike_multiplier;
+	double						left_bias_constant;   // left_spike_count*left_spike_multiplier+left_bias_constant >? right_spike_count*right_spike_multiplier + right_bias_constant
+	double						right_bias_constant;   
+	double						spike_count_threshold_left; 
+	double						spike_count_threshold_right; 
 	TimeStamp					stay_at_target_duration;	
 	TimeStamp					send_pw_command_wait_period;
 	TimeStamp					receive_position_wait_period;
@@ -33,13 +38,13 @@ typedef struct
 	unsigned int 					spike_2_servo_degree_handling_period_multiplier;  //  send_pw_command_wait_period * this value = spike count handling. 
 	double						max_servo_angle_change;  // (in terms of degree)   // for servo control in handle spike data buff. It determines max servo speed.
 //	double						servo_angle_change_threshold;  // (in terms of degree)   // for servo control in handle spike data buff. It determines min servo speed to be handled, it is a threshold to handle servo, below it, speed is 0.
-	double						spike_count_threshold; 
 	ProstheticCtrlThreshold				threshold;
 	RobotSpacePoints				start_info;
 	RobotSpacePoints				target_info;
 	ThreeDofRobotCartesianLimit	cartesian_space_limits;	// interrupt pulsing servos, robot goes to somewhere dangerous
 	ServoAngularLimit				polar_space_limits[THREE_DOF_ROBOT_NUM_OF_SERVOS];
 	unsigned int					num_of_output_neurons;
+	bool						only_move_toward_selected_side;
 } ProstheticCtrlParadigmRobotReach;
 
 bool submit_cartesian_robotic_space_borders(ThreeDofRobot *robot_arm, ProstheticCtrlParadigmRobotReach *paradigm, double depth_min, double depth_max, double lateral_min, double lateral_max, double height_min, double height_max);

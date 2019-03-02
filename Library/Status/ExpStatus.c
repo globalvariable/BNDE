@@ -49,6 +49,14 @@ bool get_trial_status_type_string(ExpStatus trial_status_type, char *str)   // p
 			if (str != NULL)
 				strcpy(str, "TRIAL_STATUS_AFTER_ESCAPING");
 			return TRUE;
+		case TRIAL_STATUS_WAIT_FOR_CHAIN_PULL:
+			if (str != NULL)
+				strcpy(str, "TRIAL_STATUS_WAIT_FOR_CHAIN_PULL");
+			return TRUE;
+		case TRIAL_STATUS_WAIT_FOR_ROBOT_REACH:
+			if (str != NULL)
+				strcpy(str, "TRIAL_STATUS_WAIT_FOR_ROBOT_REACH");
+			return TRUE;
 /////////////////////////		
 		case TRIAL_STATUS_NULL:
 			if (str != NULL)

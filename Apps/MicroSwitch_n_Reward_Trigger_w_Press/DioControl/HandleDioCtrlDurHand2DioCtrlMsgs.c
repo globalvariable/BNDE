@@ -22,7 +22,7 @@ bool handle_dio_ctrl_dur_handler_to_dio_control_msg(DioCtrlData *dio_ctrl_data, 
 						if (has_response)
 						{
 //							print_message(INFO_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "IR_BEAM_IDX_IN_DIO_CTRL_DATA RESPONSE");
-							if (! write_to_dio_ctrl_2_exp_ctrl_msg_buffer(msgs_dio_ctrl_2_exp_ctrl, current_time, DIO_CTRL_2_EXP_CTRL_MSG_START_TRIAL_REQUEST, 0))
+							if (! write_to_dio_ctrl_2_exp_ctrl_msg_buffer(msgs_dio_ctrl_2_exp_ctrl, current_time, DIO_CTRL_2_EXP_CTRL_MSG_REWARD_REQUEST, 0))
 								return print_message(ERROR_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "write_to_dio_ctrl_2_exp_ctrl_msg_buffer().");
 						} 
 						break;			

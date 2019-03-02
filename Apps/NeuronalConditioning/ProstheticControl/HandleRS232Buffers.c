@@ -86,7 +86,7 @@ bool handle_dio_ctrl_tx_shm_and_send_rs232_adc_command(TimeStamp current_time)
 	return TRUE;
 }
 
-bool handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history, double max_servo_angle_change, double spike_count_threshold)
+bool handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current_time, ThreeDofRobotPulseHistory *robot_pulse_history, double max_servo_angle_change, double spike_count_threshold_left, double spike_count_threshold_right, double left_spike_multiplier, double right_spike_multiplier, double left_bias_constant, double right_bias_constant, ProstheticCtrlParadigmRobotReach *prosthetic_ctrl_paradigm)
 {
 	unsigned int i;
 	DioCtrlTxShm dio_ctrl_tx_buffer;
@@ -113,9 +113,33 @@ bool handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(TimeStamp current
 
 	if ( check_three_dof_robot_security_limits(static_robot_arm))
 	{
-		for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
-			evaluate_servo_pw_command_via_spike_count_with_limitation_count_thresholding(&(static_robot_arm->servos[i]), max_servo_angle_change, spike_count_threshold);
+/*		for (i = 0; i < THREE_DOF_ROBOT_NUM_OF_SERVOS; i++)
+		{
+	//		evaluate_servo_pw_command_via_spike_count_with_limitation_count_thresholding(&(static_robot_arm->servos[i]), max_servo_angle_change, spike_count_threshold);
+	//		evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing(&(static_robot_arm->servos[i]), max_servo_angle_change, spike_count_threshold, right_spike_multiplier);
+			evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized(&(static_robot_arm->servos[i]), max_servo_angle_change, spike_count_threshold, right_spike_multiplier, bias_constant);
+		}
+*/
 
+
+		if (prosthetic_ctrl_paradigm->only_move_toward_selected_side)
+		{
+			if (prosthetic_ctrl_paradigm->target_info.selected_position_idx == 0)
+			{
+				evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized_one_side(&(static_robot_arm->servos[BASE_SERVO]), max_servo_angle_change, spike_count_threshold_left, spike_count_threshold_right, left_spike_multiplier, right_spike_multiplier, left_bias_constant, right_bias_constant, TRUE, FALSE);
+			} 
+			else if (prosthetic_ctrl_paradigm->target_info.selected_position_idx == 1)
+			{
+				evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized_one_side(&(static_robot_arm->servos[BASE_SERVO]), max_servo_angle_change, spike_count_threshold_left, spike_count_threshold_right, left_spike_multiplier, right_spike_multiplier, left_bias_constant, right_bias_constant, FALSE, TRUE);
+			} 
+		}
+		else
+		{
+			evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized(&(static_robot_arm->servos[BASE_SERVO]), max_servo_angle_change, spike_count_threshold_left, spike_count_threshold_right, left_spike_multiplier, right_spike_multiplier, left_bias_constant, right_bias_constant);   // Apply bias only for BASE_SERVO
+		}
+
+		evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized(&(static_robot_arm->servos[ELBOW_SERVO]), max_servo_angle_change, 0, 0, 0, 0, 0, 0);
+		evaluate_servo_pw_command_via_spike_count_with_limitation_thresholding_biasing_not_normalized(&(static_robot_arm->servos[SHOULDER_SERVO]), max_servo_angle_change, 0, 0, 0, 0, 0, 0);  
 
 		if (! write_to_three_dof_robot_pulse_history(robot_pulse_history, current_time, static_robot_arm->servos[BASE_SERVO].pulse_current, static_robot_arm->servos[SHOULDER_SERVO].pulse_current, static_robot_arm->servos[ELBOW_SERVO].pulse_current))
 			return print_message(ERROR_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command", "! write_to_three_dof_robot_pulse_history()."); 

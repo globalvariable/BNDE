@@ -31,6 +31,9 @@ static GtkWidget *btn_decrease_robot_start_idx;
 
 static GtkWidget *btn_release_reward;
 
+static GtkWidget *entry_trial_length;
+static GtkWidget *btn_submit_trial_length;
+
 static GtkWidget *btn_start_trial;
 
 //Stats
@@ -78,6 +81,8 @@ static void decrease_robot_start_idx_button_func (void);
 static void release_reward_button_func (void);
 
 static void start_trial_button_func (void);
+
+static void submit_trial_length_button_func (void);
 
 static void submit_trial_number_button_func (void);
 
@@ -206,6 +211,23 @@ bool create_exp_control_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2Exp
 
 	lbl_difficulty_level = gtk_label_new("0");
         gtk_box_pack_start(GTK_BOX(hbox),lbl_difficulty_level, FALSE,FALSE,0);
+
+        gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	lbl = gtk_label_new("Trial Length (ms): ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+	entry_trial_length = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_trial_length, FALSE, FALSE, 0);
+	gtk_entry_set_text(GTK_ENTRY(entry_trial_length), "3000");
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_submit_trial_length = gtk_button_new_with_label("Submit Trial Length");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_trial_length , TRUE, TRUE, 0);
 
 	////////   SECOND COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -478,6 +500,8 @@ bool create_exp_control_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2Exp
 	g_signal_connect(G_OBJECT(btn_release_reward), "clicked", G_CALLBACK(release_reward_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_start_trial), "clicked", G_CALLBACK(start_trial_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_submit_trial_length), "clicked", G_CALLBACK(submit_trial_length_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_submit_trial_number), "clicked", G_CALLBACK(submit_trial_number_button_func), NULL);
 
@@ -828,4 +852,17 @@ static void start_trial_button_func (void)
 		return (void)print_message(ERROR_MSG ,"ExpControl", "GuiExpControl", "start_recording_button_func ", "! write_to_gui_2_exp_ctrl_msg_buffer().");	
 
 #endif
+}
+
+static void submit_trial_length_button_func (void)
+{
+	unsigned int i;
+	paradigm->max_trial_length[0] = 1000000* (unsigned int)atof(gtk_entry_get_text(GTK_ENTRY(entry_trial_length)));
+	printf ("Max Trial Length for Difficulty Level %u: %llu\n", 0, paradigm->max_trial_length[0]);
+	for (i = 1; i < paradigm->num_of_difficulty_levels; i++)
+	{
+		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + paradigm->trial_length_diff_btw_difficulty_levels;
+		printf ("Max Trial Length for Difficulty Level %u: %llu\n", i, paradigm->max_trial_length[i]);
+	}
+
 }

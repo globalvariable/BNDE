@@ -46,6 +46,39 @@ bool handle_dio_control_to_dio_ctrl_dur_handler_msg(DioCtrlDurationStatus *dio_c
 								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
 						}
 						 break;	
+					case LEFT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_ON:
+								print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA");
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);   
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_OFF:
+								inputs_handling_end_time_min[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA] = msg_item.additional_data;
+								dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_ON;
+								break;			
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+					case RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_ON:
+								print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA");
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);   
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_OFF:
+								inputs_handling_end_time_min[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA] = msg_item.additional_data;
+								dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_ON;
+								break;			
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+
 
 					default:
 						return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "msg_item.inp_comp_num");	
@@ -77,6 +110,32 @@ bool handle_dio_control_to_dio_ctrl_dur_handler_msg(DioCtrlDurationStatus *dio_c
 								break; // do nothing
 							default:
 								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);  
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+					case LEFT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_ON:
+								dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_OFF;
+								break;			
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_OFF:
+								break; // do nothing
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);  
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+					case RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_ON:
+								dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_OFF;
+								break;			
+							case DIO_CTRL_INPUTS_MIN_DUR_STATUS_TIMER_OFF:
+								break; // do nothing
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_min_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);  
 								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
 						}
 						 break;	
@@ -120,7 +179,41 @@ bool handle_dio_control_to_dio_ctrl_dur_handler_msg(DioCtrlDurationStatus *dio_c
 								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);
 								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
 						}
-						 break;				
+						 break;	
+
+					case LEFT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_ON:
+								print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA");
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);   
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_OFF:
+								inputs_handling_end_time_max[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA] = msg_item.additional_data;
+								dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_ON;
+								break;			
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;		
+					case RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_ON:
+								print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA");
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);   
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_OFF:
+								inputs_handling_end_time_max[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA] = msg_item.additional_data;
+								dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_ON;
+								break;			
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+			
 					default:
 						return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "msg_item.inp_comp_num");	
 				}
@@ -154,7 +247,36 @@ bool handle_dio_control_to_dio_ctrl_dur_handler_msg(DioCtrlDurationStatus *dio_c
 								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);  
 								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
 						}
-						 break;		
+						 break;	
+					case LEFT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_ON:
+								dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_OFF;
+								break;			
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_OFF:
+								break; // do nothing
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);  
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+
+					case RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						switch (dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA])
+						{
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_ON:
+								dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA] = DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_OFF;
+								break;			
+							case DIO_CTRL_INPUTS_MAX_DUR_STATUS_TIMER_OFF:
+								break; // do nothing
+							default:
+								get_dio_ctrl_dur_status_type_string(dio_ctrl_inputs_max_dur_status[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA], str_dio_ctrl_dur_status);  
+								return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", str_dio_ctrl_dur_status);
+						}
+						 break;	
+
+	
 					default:
 						return print_message(BUG_MSG ,"DioControl", "HandleDioCtrl2DioCtrlDurHandMsgs", "handle_dio_control_to_dio_ctrl_dur_handler_msg", "msg_item.inp_comp_num");	
 				}

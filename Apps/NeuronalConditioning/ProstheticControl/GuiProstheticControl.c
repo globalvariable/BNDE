@@ -12,13 +12,25 @@ static ProstheticCtrlStatusHistory* static_prosthetic_ctrl_status_history = NULL
 static ThreeDofRobotAngleHistory *static_robot_angle_history = NULL;
 static ThreeDofRobotPulseHistory *static_robot_pulse_history = NULL;
 
-static GtkWidget *entry_spike_multiplier;
+static GtkWidget *entry_left_bias_constant;
+static GtkWidget *entry_right_bias_constant;
+static GtkWidget *entry_left_spike_multiplier;
+static GtkWidget *entry_right_spike_multiplier;
 static GtkWidget *btn_submit_spike_multiplier;
+
+static GtkWidget *entry_spike_threshold_left;
+static GtkWidget *entry_spike_threshold_right;
+static GtkWidget *btn_submit_spike_threshold;
+static GtkWidget *btn_only_one_side;
 
 static GtkWidget *btn_select_directory_to_save;
 static GtkWidget *btn_create_recording_folder;
 
 static void submit_spike_multiplier_button_func (void);
+
+static void submit_spike_threshold_button_func (void);
+
+static void only_one_side_button_func (void);
 
 static void create_recording_folder_button_func (void);
 
@@ -30,7 +42,7 @@ static gboolean timeout_callback(gpointer graph);
 
 bool create_prosthetic_control_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, Gui2ProstheticCtrlMsg *msgs_gui_2_prosthetic_ctrl, ProstheticCtrl2GuiMsg *msgs_prosthetic_ctrl_2_gui, ThreeDofRobot *robot_arm, ProstheticCtrlParadigmRobotReach *prosthetic_ctrl_paradigm, ProstheticCtrlStatusHistory* prosthetic_ctrl_status_history, ThreeDofRobotAngleHistory *robot_angle_history, ThreeDofRobotPulseHistory *robot_pulse_history)
 {
-	GtkWidget *frame, *frame_label, *hbox, *table, *vbox;
+	GtkWidget *frame, *frame_label, *hbox, *table, *vbox, *lbl;
 
 	static_rt_tasks_data = rt_tasks_data;
 
@@ -61,14 +73,94 @@ bool create_prosthetic_control_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
-	btn_submit_spike_multiplier = gtk_button_new_with_label("Left x Coeff");
+        lbl = gtk_label_new("Left Bias Constant : ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	entry_left_bias_constant = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_left_bias_constant, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_left_bias_constant, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_left_bias_constant), "0.0");
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+        lbl = gtk_label_new("Right Bias Constant : ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	entry_right_bias_constant = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_right_bias_constant, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_right_bias_constant, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_right_bias_constant), "0.0");
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+        lbl = gtk_label_new("Left Multiplier : ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	entry_left_spike_multiplier = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_left_spike_multiplier, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_left_spike_multiplier, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_left_spike_multiplier), "1.0");
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+        lbl = gtk_label_new("Right Multiplier : ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	entry_right_spike_multiplier = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_right_spike_multiplier, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_right_spike_multiplier, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_right_spike_multiplier), "1.0");
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_submit_spike_multiplier = gtk_button_new_with_label("Submit Spike Multiplier");
 	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_spike_multiplier, FALSE, FALSE, 0);
 
-	entry_spike_multiplier = gtk_entry_new();
-        gtk_box_pack_start(GTK_BOX(hbox), entry_spike_multiplier, FALSE, FALSE, 0);
-	gtk_widget_set_size_request(entry_spike_multiplier, 50, 25);
-	gtk_entry_set_text(GTK_ENTRY(entry_spike_multiplier), "1.0");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
 
+        lbl = gtk_label_new("");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+        lbl = gtk_label_new("Left Spike Count Threshold (100ms): ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	entry_spike_threshold_left = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_spike_threshold_left, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_spike_threshold_left, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_spike_threshold_left), "1.0");
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+        lbl = gtk_label_new("Right Spike Count Threshold (100ms): ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
+
+	entry_spike_threshold_right = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox), entry_spike_threshold_right, FALSE, FALSE, 0);
+	gtk_widget_set_size_request(entry_spike_threshold_right, 50, 25);
+	gtk_entry_set_text(GTK_ENTRY(entry_spike_threshold_right), "1.0");
+
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_submit_spike_threshold = gtk_button_new_with_label("Submit Spike Threshold");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_submit_spike_threshold, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_only_one_side = gtk_button_new_with_label("Only Move to Selected Side : OFF");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_only_one_side, FALSE, FALSE, 0);
 
 	////////   LAST COLUMN
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -94,6 +186,10 @@ bool create_prosthetic_control_tab(GtkWidget *tabs, RtTasksData *rt_tasks_data, 
 
 
 	g_signal_connect(G_OBJECT(btn_submit_spike_multiplier), "clicked", G_CALLBACK(submit_spike_multiplier_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_submit_spike_threshold), "clicked", G_CALLBACK(submit_spike_threshold_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_only_one_side), "clicked", G_CALLBACK(only_one_side_button_func), NULL);
 
 	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
 
@@ -233,6 +329,30 @@ static void set_directory_btn_select_directory_to_save(void)
 
 static void submit_spike_multiplier_button_func (void)
 {
-	static_prosthetic_ctrl_paradigm->left_spike_multiplier = atof(gtk_entry_get_text(GTK_ENTRY(entry_spike_multiplier)));
+	static_prosthetic_ctrl_paradigm->left_spike_multiplier = atof(gtk_entry_get_text(GTK_ENTRY(entry_left_spike_multiplier)));
+	static_prosthetic_ctrl_paradigm->right_spike_multiplier = atof(gtk_entry_get_text(GTK_ENTRY(entry_right_spike_multiplier)));
+	static_prosthetic_ctrl_paradigm->left_bias_constant = atof(gtk_entry_get_text(GTK_ENTRY(entry_left_bias_constant)));
+	static_prosthetic_ctrl_paradigm->right_bias_constant = atof(gtk_entry_get_text(GTK_ENTRY(entry_right_bias_constant)));
+}
+
+static void submit_spike_threshold_button_func (void)
+{
+	static_prosthetic_ctrl_paradigm->spike_count_threshold_left = atof(gtk_entry_get_text(GTK_ENTRY(entry_spike_threshold_left)));
+	static_prosthetic_ctrl_paradigm->spike_count_threshold_right = atof(gtk_entry_get_text(GTK_ENTRY(entry_spike_threshold_right)));
+}
+
+static void only_one_side_button_func (void)
+{
+
+	if (!static_prosthetic_ctrl_paradigm->only_move_toward_selected_side)
+	{
+		gtk_button_set_label (GTK_BUTTON(btn_only_one_side),"Only Move to Selected Side : ON");
+		static_prosthetic_ctrl_paradigm->only_move_toward_selected_side = TRUE;
+	}
+	else
+	{
+		gtk_button_set_label (GTK_BUTTON(btn_only_one_side),"Only Move to Selected Side : OFF");
+		static_prosthetic_ctrl_paradigm->only_move_toward_selected_side = FALSE;
+	}	
 
 }

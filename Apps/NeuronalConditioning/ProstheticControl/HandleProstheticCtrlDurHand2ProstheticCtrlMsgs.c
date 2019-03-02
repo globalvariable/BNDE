@@ -50,17 +50,119 @@ bool handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg(ThreeDofRobot 
 						}
 						break;	
 					case PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH:
-						if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change,  prosthetic_ctrl_paradigm->spike_count_threshold ))
-							return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
-						// Schedule adc conversion results reading and pulse width sending again.
-						prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
-						prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
-						if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
-							print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
-						prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
-						prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
-						if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
-							print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+						switch (*prosthetic_ctrl_status)
+						{
+							case PROSTHETIC_CTRL_STATUS_OUT_OF_TRIAL:
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, 0, 0, 0, 0, 0, 0, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+								break;	
+					
+							case PROSTHETIC_CTRL_STATUS_STAYING_AT_START_POINT:
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, 0, 0, 0, 0, 0, 0, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+								break;	
+
+
+							case PROSTHETIC_CTRL_STATUS_AVAILABLE_TO_CONTROL:   /// Apply bias only when the prosthetic control is available.
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, prosthetic_ctrl_paradigm->spike_count_threshold_left, prosthetic_ctrl_paradigm->spike_count_threshold_right, prosthetic_ctrl_paradigm->left_spike_multiplier, prosthetic_ctrl_paradigm->right_spike_multiplier, prosthetic_ctrl_paradigm->left_bias_constant, prosthetic_ctrl_paradigm->right_bias_constant, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");	
+								break;	
+							
+							case PROSTHETIC_CTRL_STATUS_RESETTING_TO_TARGET_POINT:
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, 0, 0, 0, 0, 0, 0, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+								break;	
+
+
+							case PROSTHETIC_CTRL_STATUS_REACHED_TARGET_POINT:
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, 0, 0, 0, 0, 0, 0, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+								break;
+	
+							case PROSTHETIC_CTRL_STATUS_RESETTING_TO_START_POINT:
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, 0, 0, 0, 0, 0, 0, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+								break;	
+
+
+							case PROSTHETIC_CTRL_STATUS_DISABLED:
+								if (! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command(current_time, robot_pulse_history, prosthetic_ctrl_paradigm->max_servo_angle_change, 0, 0, 0, 0, 0, 0, prosthetic_ctrl_paradigm))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! handle_dio_ctrl_tx_shm_and_send_rs232_pulse_width_command");
+								// Schedule adc conversion results reading and pulse width sending again.
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->send_pw_command_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_PULSE_WIDTH;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.schedule = current_time + prosthetic_ctrl_paradigm->receive_position_wait_period;
+								prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data.schedule.item_idx = PROSTHETIC_CTRL_DUR_STATUS_ITEM_READ_POSITION;
+								if (! write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer(msgs_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand, current_time,  PROSTHETIC_CTRL_2_PROSTHETIC_CTRL_DUR_HAND_MSG_SET_SCHEDULE, prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_additional_data)) 
+									print_message(BUG_MSG ,"ProstheticControl", "ProstheticControlRtTask", "rt_prosthetic_control", "write_to_prosthetic_ctrl_2_prosthetic_ctrl_dur_hand_msg_buffer().");
+
+								break;									
+
+							default: 
+								return print_message(BUG_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "PROSTHETIC_CTRL_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *prosthetic_ctrl_status - switch- default");							
+						}
 						break;	
 					case PROSTHETIC_CTRL_DUR_STATUS_ITEM_SEND_AD_CONVERSION:
 						if (! handle_dio_ctrl_tx_shm_and_send_rs232_adc_command(current_time))

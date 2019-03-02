@@ -276,12 +276,114 @@ bool handle_dio_ctrl_rx_shm(DioCtrlData *dio_ctrl_data, TimeStamp current_time, 
 
 	if (dio_ctrl_rs232_status_prev.left_lever != dio_ctrl_rs232_status->left_lever)
 	{
+//		printf ("CHANGE LEFT_LEVER\n");
 		dio_ctrl_rs232_status_prev.left_lever = dio_ctrl_rs232_status->left_lever;
+
+		if (dio_ctrl_rs232_status->left_lever)
+		{
+			if (! dio_ctrl_input_low_2_high_event(&(dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA]), &cancellation_reqiured_for_low_status_timer, &setting_required_for_high_status_timer))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "dio_ctrl_input_low_2_high_event().");
+			if (cancellation_reqiured_for_low_status_timer)	 
+			{
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+			}
+			if (setting_required_for_high_status_timer)
+			{	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MIN_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.min_high_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MAX_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.max_high_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");
+			}
+			if (! write_to_dio_ctrl_input_status_history(dio_ctrl_input_status_history, current_time, DIO_CTRL_INPUT_COMPONENT_LEFT_LEVER, DIO_CTRL_COMP_STATUS_HIGH))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_input_status_history().");
+
+
+		}
+		else
+		{
+			if (! dio_ctrl_input_high_2_low_event(&(dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA]), &cancellation_reqiured_for_high_status_timer, &setting_required_for_low_status_timer))
+				return print_message(BUG_MSG ,"DioControl", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "dio_ctrl_input_high_2_low_event().");
+			if (cancellation_reqiured_for_high_status_timer)	 
+			{
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");		
+			}
+			if (setting_required_for_low_status_timer)
+			{	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MIN_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.min_low_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MAX_TIMER, LEFT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.max_low_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+			}	
+			if (! write_to_dio_ctrl_input_status_history(dio_ctrl_input_status_history, current_time, DIO_CTRL_INPUT_COMPONENT_LEFT_LEVER, DIO_CTRL_COMP_STATUS_LOW))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_input_status_history().");
+
+		}
+
 	}
+
+
 	if (dio_ctrl_rs232_status_prev.right_lever != dio_ctrl_rs232_status->right_lever)
 	{
+//		printf ("CHANGE RIGHT_LEVER\n");
 		dio_ctrl_rs232_status_prev.right_lever = dio_ctrl_rs232_status->right_lever;
+
+		if (dio_ctrl_rs232_status->right_lever)
+		{
+			if (! dio_ctrl_input_low_2_high_event(&(dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA]), &cancellation_reqiured_for_low_status_timer, &setting_required_for_high_status_timer))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "dio_ctrl_input_low_2_high_event().");
+			if (cancellation_reqiured_for_low_status_timer)	 
+			{
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+			}
+			if (setting_required_for_high_status_timer)
+			{	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MIN_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.min_high_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MAX_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.max_high_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");
+			}
+			if (! write_to_dio_ctrl_input_status_history(dio_ctrl_input_status_history, current_time, DIO_CTRL_INPUT_COMPONENT_RIGHT_LEVER, DIO_CTRL_COMP_STATUS_HIGH))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_input_status_history().");
+
+		}
+		else
+		{
+			if (! dio_ctrl_input_high_2_low_event(&(dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA]), &cancellation_reqiured_for_high_status_timer, &setting_required_for_low_status_timer))
+				return print_message(BUG_MSG ,"DioControl", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "dio_ctrl_input_high_2_low_event().");
+			if (cancellation_reqiured_for_high_status_timer)	 
+			{
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MIN_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_CANCEL_INPUT_MAX_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, 0))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");		
+			}
+			if (setting_required_for_low_status_timer)
+			{	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MIN_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.min_low_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+				if (! write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer(msgs_dio_ctrl_2_dio_ctrl_dur_hand, current_time,  DIO_CTRL_2_DIO_CTRL_DUR_HAND_MSG_START_INPUT_MAX_TIMER, RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA, dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA].constraints.max_low_status_duration + current_time))
+					return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_2_dio_ctrl_dur_hand_msg_buffer().");	
+			}	
+			if (! write_to_dio_ctrl_input_status_history(dio_ctrl_input_status_history, current_time, DIO_CTRL_INPUT_COMPONENT_RIGHT_LEVER, DIO_CTRL_COMP_STATUS_LOW))
+				return print_message(BUG_MSG ,"BMIExpController", "HandleRS232Buffers", "handle_dio_ctrl_rx_shm", "write_to_dio_ctrl_input_status_history().");
+
+
+		}
+
 	}
+
+
+
+
 
 	if (dio_ctrl_rs232_status_prev.ir_beam_2 != dio_ctrl_rs232_status->ir_beam_2)
 	{

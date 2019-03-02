@@ -61,9 +61,9 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_trial_status = TRIAL_STATUS_IN_REFRACTORY;
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_target_position_idx = 0;
 /*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");  */
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
 
-						if (!write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_IN_REFRACTORY))
+*/						if (!write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_IN_REFRACTORY))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
 						if (! write_to_trial_status_history(trial_status_history, current_time, TRIAL_STATUS_IN_REFRACTORY))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_trial_status_history()");
@@ -324,8 +324,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						if (! write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_START_RECORDING, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 						exp_ctrl_to_neural_net_msg_add.recording_number = recording_number;
-/*						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_START_RECORDING, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");  */
+						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_START_RECORDING, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 
 						if (! write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
@@ -338,8 +338,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						if (! write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_START_RECORDING, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 						exp_ctrl_to_neural_net_msg_add.recording_number = recording_number;
-/*						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_START_RECORDING, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");   */
+						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_START_RECORDING, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 
 						if (! write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_BROADCAST_START_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
@@ -375,8 +375,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						if (! write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_STOP_RECORDING, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 						exp_ctrl_to_neural_net_msg_add.recording_number = recording_number;
-/*						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_STOP_RECORDING, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");    */
+						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_STOP_RECORDING, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 
 						if (! write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
@@ -394,8 +394,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						if (! write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_STOP_RECORDING, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 						exp_ctrl_to_neural_net_msg_add.recording_number = recording_number;
-/*						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_STOP_RECORDING, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");    */
+						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_STOP_RECORDING, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 
 						if (! write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_BROADCAST_STOP_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
@@ -426,8 +426,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						if (! write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_CANCEL_RECORDING, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 						exp_ctrl_to_neural_net_msg_add.recording_number = recording_number;
-/*						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_CANCEL_RECORDING, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");   */
+						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_CANCEL_RECORDING, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 
 						if (! write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
@@ -440,8 +440,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						if (! write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_CANCEL_RECORDING, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 						exp_ctrl_to_neural_net_msg_add.recording_number = recording_number;
-/*						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_CANCEL_RECORDING, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");    */
+						if (! write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_CANCEL_RECORDING, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 
 						if (! write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_BROADCAST_CANCEL_RECORDING_MSG_ACK, recording_number))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");
@@ -499,8 +499,8 @@ bool handle_gui_to_exp_control_msg(TimeStamp current_time)
 						exp_ctrl_to_neural_net_msg_add.difficulty_reward_predict_add.difficulty_level = paradigm->current_trial_data.difficulty_level;  // determined when trial ends according to robot start position
 						exp_ctrl_to_neural_net_msg_add.difficulty_reward_predict_add.reward_prediction = paradigm->current_trial_data.reward_prediction;
 
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_START, exp_ctrl_to_neural_net_msg_add))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");   */
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_START, exp_ctrl_to_neural_net_msg_add))
+							return print_message(ERROR_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
 
 						if (!write_to_exp_ctrl_2_gui_msg_buffer(msgs_exp_ctrl_2_gui, current_time, EXP_CTRL_2_GUI_MSG_TRIAL_STATUS_CHANGE, TRIAL_STATUS_GET_READY_TO_START))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleGui2ExpCtrlMsgs", "handle_gui_to_exp_control_msg", "write_to_exp_ctrl_2_gui_msg_buffer()");

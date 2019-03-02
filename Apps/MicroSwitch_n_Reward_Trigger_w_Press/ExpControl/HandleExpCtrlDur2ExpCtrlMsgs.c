@@ -129,9 +129,6 @@ bool handle_trial_dur_handler_to_exp_control_msg(TimeStamp current_time)
 						}
 
 						paradigm->current_trial_data.difficulty_level = paradigm->current_trial_data.robot_start_position_idx;  ///   paradigm->current_trial_data.robot_start_position_idx is minimum 1
-
-						if (!write_to_exp_ctrl_2_dio_ctrl_msg_buffer(msgs_exp_ctrl_2_dio_ctrl, current_time, EXP_CTRL_2_DIO_CTRL_MSG_RELEASE_REWARD, 0))
-							return print_message(ERROR_MSG ,"ExpControl", "HandleExpCtrlDur2ExpCtrlMsgss", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
 		
 						if (!write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer(msgs_exp_ctrl_2_prosthetic_ctrl, current_time, EXP_CTRL_2_PROSTHETIC_CTRL_MSG_END_TRIAL, exp_ctrl_2_prosthetic_ctrl_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleExpCtrlDur2ExpCtrlMsgss", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_prosthetic_ctrl_msg_buffer()");
@@ -150,9 +147,9 @@ bool handle_trial_dur_handler_to_exp_control_msg(TimeStamp current_time)
 						exp_ctrl_to_neural_net_msg_add.trial_status_change_msg_add.new_robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx;
 /*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_TRIAL_STATUS_CHANGED, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
-*/
+
 						exp_ctrl_to_neural_net_msg_add.dummy = 0;
-/*						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING, exp_ctrl_to_neural_net_msg_add))
+						if (!write_to_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net, current_time, EXP_CTRL_2_NEURAL_NET_MSG_END_TRIAL_WITH_NOTHING, exp_ctrl_to_neural_net_msg_add))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleProstheticCtrl2ExpCtrlMsgs", "handle_trial_dur_handler_to_exp_control_msg", "write_to_exp_ctrl_2_neural_net_msg_buffer()");
 */
 						break;  

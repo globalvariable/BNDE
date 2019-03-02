@@ -493,6 +493,7 @@ bool create_spike_sorter_gui(GtkWidget *tabs)
 
   	btn_select_folder_to_save_template_matching_file = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
         gtk_box_pack_start(GTK_BOX(hbox), btn_select_folder_to_save_template_matching_file, FALSE,FALSE,0);
+	gtk_widget_set_size_request(btn_select_folder_to_save_template_matching_file, 125, 25) ;
 	set_directory_btn_select_directory_to_save();
 
 	btn_save_template_matching_file = gtk_button_new_with_label("Save Template File");

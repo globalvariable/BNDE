@@ -27,6 +27,8 @@ typedef struct __ExpStatusEvents ExpStatusEvents;
 #define	TRIAL_STATUS_REWARD_AVAILABLE			9
 #define	TRIAL_STATUS_ESCAPING					10
 #define	TRIAL_STATUS_AFTER_ESCAPING				11
+#define TRIAL_STATUS_WAIT_FOR_CHAIN_PULL	12
+#define	TRIAL_STATUS_WAIT_FOR_ROBOT_REACH		13
 
 struct __ExpStatusEventItem
 {

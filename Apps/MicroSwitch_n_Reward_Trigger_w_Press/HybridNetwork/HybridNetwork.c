@@ -17,8 +17,8 @@ int main( int argc, char *argv[])
 
 	if (! initialize_blue_spike_data())	
 		return print_message(ERROR_MSG ,"HybridNetwork", "HybridNetwork", "main","! initialize_blue_spike_data().");		
-*/
-	if (! start_periodic_task()) // to evaluate system clock
+
+*/	if (! start_periodic_task()) // to evaluate system clock
 		return print_message(ERROR_MSG ,"HybridNetwork", "HybridNetwork", "main","! start_periodic_task().");	
 
 /*	if (! connect_to_prosthetic_ctrl())
@@ -29,9 +29,9 @@ int main( int argc, char *argv[])
 
 
 	printf ("%d\n", sizeof(sampl_t));
-*/
-//	create_gui();
-	gtk_main();
+
+	create_gui();
+*/	gtk_main();
 	return 0;
 }
 

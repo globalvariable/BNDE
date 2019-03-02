@@ -68,7 +68,7 @@ static void *rt_periodic_handler(void *args)
 		prev_time = curr_time;
 		//	routines are run below
 
-		// printf ("%lu\n", curr_time);
+
 		// no routines. evalute run time.
 
 		// routines

@@ -482,7 +482,7 @@ bool create_spike_sorter_gui(GtkWidget *tabs)
 	
 	btn_select_template_matching_file_to_load = gtk_file_chooser_button_new ("Select Template File", GTK_FILE_CHOOSER_ACTION_OPEN);
         gtk_box_pack_start(GTK_BOX(hbox),btn_select_template_matching_file_to_load, TRUE,TRUE,0);
-	gtk_widget_set_size_request(btn_select_template_matching_file_to_load, 125, 25) ;
+	gtk_widget_set_size_request(btn_select_template_matching_file_to_load, 110, 25) ;
 	set_directory_btn_select_directory_to_load();
 	
 	btn_load_template_matching_file = gtk_button_new_with_label("Load Template File");
@@ -493,6 +493,7 @@ bool create_spike_sorter_gui(GtkWidget *tabs)
 
   	btn_select_folder_to_save_template_matching_file = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
         gtk_box_pack_start(GTK_BOX(hbox), btn_select_folder_to_save_template_matching_file, FALSE,FALSE,0);
+	gtk_widget_set_size_request(btn_select_folder_to_save_template_matching_file, 110, 25) ;
 	set_directory_btn_select_directory_to_save();
 
 	btn_save_template_matching_file = gtk_button_new_with_label("Save Template File");

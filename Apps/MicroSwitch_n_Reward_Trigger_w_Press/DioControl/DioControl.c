@@ -26,7 +26,7 @@ int main( int argc, char *argv[])
 
 
 //     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
-	if (! add_input_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, 10000000, 1500000000, 10000000, 1500000000, 1, 1, DIO_CTRL_COMP_STATUS_HIGH, FALSE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
+	if (! add_input_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_INPUT_COMPONENT_IR_BEAM_NOSE_POKE, 10000000, 1500000000, 10000000, 1500000000, 0, 1, DIO_CTRL_COMP_STATUS_HIGH, FALSE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
 		return print_message(ERROR_MSG ,"DioControl", "DioControl", "main", "! add_input_component_type_to_dio_ctrl_data().");  
 //     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
 	if (! add_input_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_INPUT_COMPONENT_RESTRAIN_SWITCH, 10000000, 1500000000, 10000000, 1500000000, 0, 1, DIO_CTRL_COMP_STATUS_HIGH, FALSE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 

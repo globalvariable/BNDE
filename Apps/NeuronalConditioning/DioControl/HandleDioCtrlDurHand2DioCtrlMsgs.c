@@ -36,7 +36,34 @@ bool handle_dio_ctrl_dur_handler_to_dio_control_msg(DioCtrlData *dio_ctrl_data, 
 								return print_message(ERROR_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "write_to_dio_ctrl_2_exp_ctrl_msg_buffer().");
 
 						} 
-						 break;					
+						 break;	
+					case LEFT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						if (! time_out_success_for_input_comp(&(dio_ctrl_data->inp_comp_types[LEFT_LEVER_IDX_IN_DIO_CTRL_DATA]), &has_response))
+							return print_message(BUG_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "min_time_out_for_input_comp().");
+						if (has_response)
+						{
+//							print_message(INFO_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA RESPONSE");
+
+/*							if (! write_to_dio_ctrl_2_exp_ctrl_msg_buffer(msgs_dio_ctrl_2_exp_ctrl, current_time, DIO_CTRL_2_EXP_CTRL_MSG_PUNISHMENT_REQUEST, 0))
+								return print_message(ERROR_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "write_to_dio_ctrl_2_exp_ctrl_msg_buffer().");
+*/
+						} 
+						 break;	
+
+					case RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						if (! time_out_success_for_input_comp(&(dio_ctrl_data->inp_comp_types[RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA]), &has_response))
+							return print_message(BUG_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "min_time_out_for_input_comp().");
+						if (has_response)
+						{
+//							print_message(INFO_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA RESPONSE");
+/*							if (! write_to_dio_ctrl_2_exp_ctrl_msg_buffer(msgs_dio_ctrl_2_exp_ctrl, current_time, DIO_CTRL_2_EXP_CTRL_MSG_PUNISHMENT_REQUEST, 0))
+								return print_message(ERROR_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "write_to_dio_ctrl_2_exp_ctrl_msg_buffer().");
+*/
+
+						} 
+						 break;	
+
+				
 					default:
 						return print_message(BUG_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "switch (msg_item.inp_comp_num)");	
 				}
@@ -56,7 +83,20 @@ bool handle_dio_ctrl_dur_handler_to_dio_control_msg(DioCtrlData *dio_ctrl_data, 
 						{
 							// not required to cancel timer here. it cancels itself when there is a timeout.	
 						}
-						break;						
+						break;
+					case LEFT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						reset_dio_ctrl_input_with_status_reset(&(dio_ctrl_data->inp_comp_types[IR_BEAM_IDX_IN_DIO_CTRL_DATA]), &timer_cancellation_required);
+						if (timer_cancellation_required)
+						{
+							// not required to cancel timer here. it cancels itself when there is a timeout.	
+						}
+						break;			
+					case RIGHT_LEVER_IDX_IN_DIO_CTRL_DATA:
+						reset_dio_ctrl_input_with_status_reset(&(dio_ctrl_data->inp_comp_types[RESTRAIN_SWITCH_IDX_IN_DIO_CTRL_DATA]), &timer_cancellation_required);
+						{
+							// not required to cancel timer here. it cancels itself when there is a timeout.	
+						}
+						break;							
 					default:
 						return print_message(BUG_MSG ,"DioControl", "HandleDioCtrlDurHand2DioCtrlMsgs", "handle_dio_ctrl_dur_handler_to_dio_control_msg", "switch (msg_item.inp_comp_num)");
 				}

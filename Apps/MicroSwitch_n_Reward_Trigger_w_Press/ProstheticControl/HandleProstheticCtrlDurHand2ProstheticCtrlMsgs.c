@@ -95,11 +95,11 @@ bool handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg(ThreeDofRobot 
 								prosthetic_ctrl_2_neural_net_msg_add.binary_reward_add.reward = -1;
 							else
 								prosthetic_ctrl_2_neural_net_msg_add.binary_reward_add.reward = 0;
-/*							for (i = 0; i < SNN_SIM_NUM_OF_DEDICATED_CPUS; i++)
+							for (i = 0; i < SNN_SIM_NUM_OF_DEDICATED_CPUS; i++)
 							{
 								if (! write_to_prosthetic_ctrl_2_neural_net_msg_buffer(msgs_prosthetic_ctrl_2_neural_net_multi_thread[i], current_time, PROSTHETIC_CTRL_2_NEURAL_NET_MSG_REINFORCEMENT, prosthetic_ctrl_2_neural_net_msg_add))
-									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! write_to_prosthetic_ctrl_2_neural_net_msg_buffer()");   
-							}   */
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! write_to_prosthetic_ctrl_2_neural_net_msg_buffer()");
+							}
 						}
 						prev_distance_to_target = distance_to_target;
 						break;	

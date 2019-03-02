@@ -3,10 +3,10 @@
 static pthread_t logging_thread;
 void *logging_thread_function( void *message_log );
 
-#define BASE_SERVO_0_DEGREE_PULSE		2104
-#define BASE_SERVO_90_DEGREE_PULSE		1537
-#define BASE_SERVO_0_DEGREE_ADC_VAL		35
-#define BASE_SERVO_90_DEGREE_ADC_VAL	310
+#define BASE_SERVO_0_DEGREE_PULSE		2097
+#define BASE_SERVO_90_DEGREE_PULSE		1532
+#define BASE_SERVO_0_DEGREE_ADC_VAL		42
+#define BASE_SERVO_90_DEGREE_ADC_VAL	311
 
 #define SHOULDER_SERVO_0_DEGREE_PULSE		2160
 #define SHOULDER_SERVO_90_DEGREE_PULSE		1585
@@ -18,7 +18,7 @@ void *logging_thread_function( void *message_log );
 #define ELBOW_SERVO_0_DEGREE_ADC_VAL	179
 #define ELBOW_SERVO_90_DEGREE_ADC_VAL	267
 
-#define BASE_SERVO_INIT_PULSE				BASE_SERVO_90_DEGREE_PULSE   
+#define BASE_SERVO_INIT_PULSE				BASE_SERVO_90_DEGREE_PULSE 
 #define SHOULDER_SERVO_INIT_PULSE		1680
 #define ELBOW_SERVO_INIT_PULSE			1494
 
@@ -64,20 +64,30 @@ int main( int argc, char *argv[])
 	// added 'M_PI -' into the second parameter of the above function since digital servo for shoulder has opposite potentiometer values compared to analog servo (Hitech HS-5805MG vs Hitech HS-805BB) 
 	init_servo_angles_for_sample_averaging(&(robot_arm->servos[ELBOW_SERVO]), ((ELBOW_SERVO_INIT_PULSE-ELBOW_SERVO_0_DEGREE_PULSE)/(ELBOW_SERVO_90_DEGREE_PULSE-ELBOW_SERVO_0_DEGREE_PULSE))*M_PI_2, 4);  // it is required for check_three_dof_robot_security_limits(). Too weird initialization cannot pass check security limits.
 
-	init_servo_spike_count_memo(&(robot_arm->servos[BASE_SERVO]), 4);
+/*	init_servo_spike_count_memo(&(robot_arm->servos[BASE_SERVO]), 4);
 	init_servo_spike_count_memo(&(robot_arm->servos[SHOULDER_SERVO]), 4);
 	init_servo_spike_count_memo(&(robot_arm->servos[ELBOW_SERVO]), 4);
+*/
+	init_servo_spike_count_memo(&(robot_arm->servos[BASE_SERVO]), 8);
+	init_servo_spike_count_memo(&(robot_arm->servos[SHOULDER_SERVO]), 8);
+	init_servo_spike_count_memo(&(robot_arm->servos[ELBOW_SERVO]), 8);
 
 	prosthetic_ctrl_paradigm->stay_at_target_duration = 50000000;
 	prosthetic_ctrl_paradigm->send_pw_command_wait_period = 25000000;
 	prosthetic_ctrl_paradigm->receive_position_wait_period = 5000000;
 
+	prosthetic_ctrl_paradigm->only_move_toward_selected_side = FALSE;
+
 
 //	prosthetic_ctrl_paradigm->spike_2_servo_degree_multiplier = 0.5;
 //	prosthetic_ctrl_paradigm->spike_2_servo_degree_handling_period_multiplier = 1;  /// to be 25 ms
 	prosthetic_ctrl_paradigm->max_servo_angle_change = 1.0;
-	prosthetic_ctrl_paradigm->spike_count_threshold = 1;
-	prosthetic_ctrl_paradigm->left_spike_multiplier = 1.0;   
+	prosthetic_ctrl_paradigm->spike_count_threshold_left = 0;
+	prosthetic_ctrl_paradigm->spike_count_threshold_right = 0;
+	prosthetic_ctrl_paradigm->left_bias_constant = 0.0; 
+  	prosthetic_ctrl_paradigm->right_bias_constant = 0.0;
+	prosthetic_ctrl_paradigm->left_spike_multiplier = 1.0;    
+	prosthetic_ctrl_paradigm->right_spike_multiplier = 1.0;   
 
 	prosthetic_ctrl_paradigm->target_info.cart_coordinates = g_new0(CartesianCoordinates, 2);
 	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths = g_new0(ThreeDofRobotServoPulse, 2);
@@ -99,14 +109,14 @@ int main( int argc, char *argv[])
 */
 	prosthetic_ctrl_paradigm->target_info.cart_coordinates[0].height = 17.7;
 	prosthetic_ctrl_paradigm->target_info.cart_coordinates[0].depth = 11.85;
-	prosthetic_ctrl_paradigm->target_info.cart_coordinates[0].lateral = 8.1;
-	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1754;
+	prosthetic_ctrl_paradigm->target_info.cart_coordinates[0].lateral = 8.0;
+	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[0].pulse[BASE_SERVO] = 1734;
 	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[0].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
 	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[0].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 	prosthetic_ctrl_paradigm->target_info.cart_coordinates[1].height = 17.7 ;
 	prosthetic_ctrl_paradigm->target_info.cart_coordinates[1].depth = 11.85;
-	prosthetic_ctrl_paradigm->target_info.cart_coordinates[1].lateral = -8.5;
-	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1340;
+	prosthetic_ctrl_paradigm->target_info.cart_coordinates[1].lateral = -8.0;
+	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[1].pulse[BASE_SERVO] = 1330;
 	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[1].pulse[SHOULDER_SERVO] = SHOULDER_SERVO_INIT_PULSE;
 	prosthetic_ctrl_paradigm->target_info.robot_pulse_widths[1].pulse[ELBOW_SERVO] = ELBOW_SERVO_INIT_PULSE;
 

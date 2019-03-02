@@ -231,8 +231,8 @@ static bool connect_to_neural_net(void)
 		if (msgs_prosthetic_ctrl_2_neural_net_multi_thread[i] == NULL)
 			return print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "connect_to_neural_net", "msgs_prosthetic_ctrl_2_neural_net == NULL.");
 		prosthetic_ctrl_2_neural_net_msg_add.dummy = 0;
-/*		if (!write_to_prosthetic_ctrl_2_neural_net_msg_buffer(msgs_prosthetic_ctrl_2_neural_net_multi_thread[i], static_rt_tasks_data->current_system_time, PROSTHETIC_CTRL_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, prosthetic_ctrl_2_neural_net_msg_add))
-			return print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "connect_to_neural_net", "write_to_prosthetic_ctrl_2_neural_net_msg_buffer().");    */
+		if (!write_to_prosthetic_ctrl_2_neural_net_msg_buffer(msgs_prosthetic_ctrl_2_neural_net_multi_thread[i], static_rt_tasks_data->current_system_time, PROSTHETIC_CTRL_2_NEURAL_NET_MSG_ARE_YOU_ALIVE, prosthetic_ctrl_2_neural_net_msg_add))
+			return print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControlRtTask", "connect_to_neural_net", "write_to_prosthetic_ctrl_2_neural_net_msg_buffer().");
 	}
 	while (1) 
 	{

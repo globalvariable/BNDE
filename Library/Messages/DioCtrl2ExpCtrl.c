@@ -37,6 +37,10 @@ bool get_dio_ctrl_2_exp_ctrl_msg_type_string(DioCtrl2ExpCtrlMsgType msg_type, ch
 			if (str != NULL)
  				strcpy(str, "DIO_CTRL_2_EXP_CTRL_MSG_RESTRAIN_RELEASE_REQ");
 			return TRUE;
+		case DIO_CTRL_2_EXP_CTRL_MSG_LEVER_RELEASE:
+			if (str != NULL)
+ 				strcpy(str, "DIO_CTRL_2_EXP_CTRL_MSG_LEVER_RELEASE");
+			return TRUE;
 /////////////////////////		
 		case DIO_CTRL_2_EXP_CTRL_MSG_NULL:
 			if (str != NULL)

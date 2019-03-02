@@ -33,7 +33,7 @@ int main( int argc, char *argv[])
 //		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + 2500000000;
 		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + 0;
 	}
-	paradigm->trial_refractory = 500000000;
+	paradigm->trial_refractory = 2000000000;
 	paradigm->get_ready_to_trial_start_length = 40000000;
 
 	paradigm->target_led_component_indexes_list = g_new0(unsigned int, paradigm->num_of_target_led_components);
@@ -41,7 +41,7 @@ int main( int argc, char *argv[])
 	paradigm->target_led_component_indexes_list[1] = RIGHT_LED_IDX_IN_DIO_CTRL_DATA;
 
 	paradigm->current_trial_data.auto_target_select_mode_on = TRUE; 
-	paradigm->current_trial_data.robot_start_position_idx = 0; 
+	paradigm->current_trial_data.robot_start_position_idx = 3; 
 
 	paradigm->all_success_average = allocate_averaging_struct(paradigm->all_success_average, 40);
 

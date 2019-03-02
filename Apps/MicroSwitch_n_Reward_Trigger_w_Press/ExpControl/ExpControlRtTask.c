@@ -36,7 +36,7 @@ static void *rt_exp_control(void *args);
 
 static bool connect_to_dio_ctrl(void);
 static bool connect_to_prosthetic_ctrl(void);
-static bool connect_to_neural_net(void);
+// static bool connect_to_neural_net(void);
 
 
 
@@ -63,8 +63,8 @@ bool create_exp_control_rt_thread(RtTasksData *rt_tasks_data, Gui2ExpCtrlMsg *ms
 
 /*	if (!connect_to_neural_net())
 		return print_message(ERROR_MSG ,"ExpControl", "ExpControlRtTask", "create_exp_control_rt_thread", "connect_to_neural_net().");	
-*/
 
+*/
 	if (! connect_to_prosthetic_ctrl())		// connect to mov obj hand before exp envi so that mov obj hand initializes semaphore and shm shared with exp envi hand.
 		return print_message(ERROR_MSG ,"ExpControl", "ExpControlRtTask", "create_exp_control_rt_thread", "connect_to_dio_ctrl().");	
 	sleep(1);
@@ -246,10 +246,10 @@ static bool connect_to_prosthetic_ctrl(void)
 	return print_message(BUG_MSG ,"ExpControl", "ExpControlRtTask", "connect_to_prosthetic_ctrl", "Wrong hit in the code.");
 }
 
-static bool connect_to_neural_net(void)
+/*static bool connect_to_neural_net(void)
 {
 	NeuralNet2ExpCtrlMsgItem msg_item;
-	char str_neural_net_2_exp_ctrl_msg[NEURAL_NET_2_EXP_CTRL_MSG_STRING_LENGTH];
+	char str_neural_net_2_exp_ctrl_msg[NEURAL_NET_2_EXP_CTRL_MSG_STRING_LENGTH];onnect_to_neural_ne
 	ExpCtrl2NeuralNetMsgAdditional exp_ctrl_to_neural_net_msg_add;
 	msgs_exp_ctrl_2_neural_net = allocate_shm_client_exp_ctrl_2_neural_net_msg_buffer(msgs_exp_ctrl_2_neural_net);
 	if (msgs_exp_ctrl_2_neural_net == NULL)
@@ -280,5 +280,5 @@ static bool connect_to_neural_net(void)
 	}
 	return print_message(BUG_MSG ,"ExpControl", "ProstheticControlRtTask", "connect_to_neural_net", "Wrong hit in the code.");
 }
-
+*/
 

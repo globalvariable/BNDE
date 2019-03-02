@@ -28,12 +28,13 @@ int main( int argc, char *argv[])
 	paradigm->max_trial_length = g_new0(TimeStamp, paradigm->num_of_difficulty_levels);
 
 	paradigm->max_trial_length[0] = 3000000000;
+	paradigm->trial_length_diff_btw_difficulty_levels = 0;
 	for (i = 1; i < paradigm->num_of_difficulty_levels; i++)
 	{
-//		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + 2500000000;
-		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + 0;
+//		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + paradigm->trial_length_diff_btw_difficulty_levels;
+		paradigm->max_trial_length[i] = paradigm->max_trial_length[i-1] + paradigm->trial_length_diff_btw_difficulty_levels;
 	}
-	paradigm->trial_refractory = 2000000000;
+	paradigm->trial_refractory = 3000000000;
 	paradigm->get_ready_to_trial_start_length = 40000000;
 
 	paradigm->target_led_component_indexes_list = g_new0(unsigned int, paradigm->num_of_target_led_components);

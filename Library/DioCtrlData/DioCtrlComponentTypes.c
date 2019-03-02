@@ -29,6 +29,14 @@ bool get_dio_ctrl_input_component_type_string(DioCtrlInputCompType component_typ
 			if (str != NULL)
 				strcpy(str, "DIO_CTRL_INPUT_COMPONENT_RESTRAIN_SWITCH");
 			return TRUE;
+		case DIO_CTRL_INPUT_COMPONENT_LEFT_LEVER_RELEASE:
+			if (str != NULL)
+				strcpy(str, "DIO_CTRL_INPUT_COMPONENT_LEFT_LEVER_RELEASE");
+			return TRUE;
+		case DIO_CTRL_INPUT_COMPONENT_RIGHT_LEVER_RELEASE:
+			if (str != NULL)
+				strcpy(str, "DIO_CTRL_INPUT_COMPONENT_RIGHT_LEVER_RELEASE");
+			return TRUE;
 /////////////////////////		
 		default:
  			strcpy(str, "DIO_CTRL_INPUT_COMPONENT_INVALID");

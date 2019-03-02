@@ -23,6 +23,8 @@ typedef unsigned int DioCtrlInputCompType;
 #define	DIO_CTRL_INPUT_COMPONENT_NOSE_RETRACT_IR				4
 #define	DIO_CTRL_INPUT_COMPONENT_LEVER							5
 #define	DIO_CTRL_INPUT_COMPONENT_RESTRAIN_SWITCH				6
+#define	DIO_CTRL_INPUT_COMPONENT_LEFT_LEVER_RELEASE						7
+#define	DIO_CTRL_INPUT_COMPONENT_RIGHT_LEVER_RELEASE					8
 
 typedef unsigned int DioCtrlOutputCompType;					
 

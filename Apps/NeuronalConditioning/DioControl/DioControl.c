@@ -33,10 +33,17 @@ int main( int argc, char *argv[])
 		return print_message(ERROR_MSG ,"DioControl", "DioControl", "main", "! add_input_component_type_to_dio_ctrl_data().");
 
 //     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
+	if (! add_input_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_INPUT_COMPONENT_LEFT_LEVER, 10000000, 1500000000, 10000000, 1500000000, 0, 1, DIO_CTRL_COMP_STATUS_HIGH, FALSE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
+		return print_message(ERROR_MSG ,"DioControl", "DioControl", "main", "! add_input_component_type_to_dio_ctrl_data().");
+//     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
+	if (! add_input_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_INPUT_COMPONENT_RIGHT_LEVER, 10000000, 1500000000, 10000000, 1500000000, 0, 1, DIO_CTRL_COMP_STATUS_HIGH, FALSE)) /// 1 nose poke   // initially the nose of the animal gets into ir_beam. this means status low (pic sends it this way). Then the animal retracts nose and status becomes high. and gets it into ir_beam and the status is low. So the repsonse criterion is reached. 
+		return print_message(ERROR_MSG ,"DioControl", "DioControl", "main", "! add_input_component_type_to_dio_ctrl_data().");
+
+//     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
 	if (! add_output_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_OUTPUT_COMPONENT_VALVE_CENTER, 40000000))
 		return print_message(ERROR_MSG ,"DioControl", "DioControl", "main", "! add_output_component_type_to_dio_ctrl_data().");
 //     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
-	if (! add_output_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_OUTPUT_COMPONENT_BUZZER, 15000000000))
+	if (! add_output_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_OUTPUT_COMPONENT_BUZZER, 500000000))
 		return print_message(ERROR_MSG ,"DioControl", "DioControl", "main", "! add_output_component_type_to_dio_ctrl_data().");
 //     Order of addition of components is important. Add them according to ConfigDioCtrlComponentNums.h
 	if (! add_output_component_type_to_dio_ctrl_data(dio_ctrl_data, DIO_CTRL_OUTPUT_COMPONENT_LEFT_TARGET_LED, 15000000000))
