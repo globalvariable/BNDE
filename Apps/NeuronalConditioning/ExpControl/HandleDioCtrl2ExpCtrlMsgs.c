@@ -139,9 +139,9 @@ bool handle_dio_control_to_exp_control_msg(TimeStamp current_time)
 
 						if (!write_to_exp_ctrl_2_dio_ctrl_msg_buffer(msgs_exp_ctrl_2_dio_ctrl, current_time, EXP_CTRL_2_DIO_CTRL_MSG_END_TRIAL, 0))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgss", "handle_dio_control_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
-/*						if (!write_to_exp_ctrl_2_dio_ctrl_msg_buffer(msgs_exp_ctrl_2_dio_ctrl, current_time, EXP_CTRL_2_DIO_CTRL_MSG_RELEASE_PUNISHMENT, 0))
+						if (!write_to_exp_ctrl_2_dio_ctrl_msg_buffer(msgs_exp_ctrl_2_dio_ctrl, current_time, EXP_CTRL_2_DIO_CTRL_MSG_RELEASE_PUNISHMENT, 0))
 							return print_message(ERROR_MSG ,"ExpControl", "HandleDioCtrl2ExpCtrlMsgs", "handle_dio_control_to_exp_control_msg", "write_to_exp_ctrl_2_dio_ctrl_msg_buffer()");
-*/
+
 						if ((paradigm->current_trial_data.robot_target_position_idx) == 0)   /// LEFT TARGET
 						{
 							exp_ctrl_2_prosthetic_ctrl_add.robot_start_position_idx = paradigm->current_trial_data.robot_start_position_idx; 

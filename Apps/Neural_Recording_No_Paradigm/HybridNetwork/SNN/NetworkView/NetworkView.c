@@ -1,0 +1,308 @@
+#include "NetworkView.h"
+
+
+
+static GtkWidget *static_tabs;
+
+// FIRST COLUMN
+
+
+static GtkWidget *btn_select_directory_to_save;
+static GtkWidget *btn_create_recording_folder;
+
+static GtkWidget *btn_start_recording;
+static GtkWidget *btn_stop_recording;
+static GtkWidget *btn_cancel_recording;
+
+static GtkWidget *lbl_recording_status;
+
+
+
+
+// FIRST COLUMN
+
+
+static void start_recording_button_func(void);
+static void stop_recording_button_func(void);
+static void cancel_recording_button_func(void);
+
+static void create_recording_folder_button_func (void);
+static void set_directory_btn_select_directory_to_save(void);
+
+static gboolean timeout_callback(gpointer user_data); 
+
+
+bool create_recording_gui(GtkWidget *tabs)
+{
+	GtkWidget *frame, *frame_label, *table, *vbox, *hbox, *lbl;
+	int i;
+
+	static_tabs = tabs;
+
+        frame = gtk_frame_new ("");
+        frame_label = gtk_label_new ("     Recording     ");      
+   
+        gtk_notebook_append_page (GTK_NOTEBOOK (tabs), frame, frame_label);  
+
+
+ 	hbox = gtk_hbox_new(TRUE, 0);
+        gtk_container_add (GTK_CONTAINER (frame), hbox);
+
+	table = gtk_table_new(3,4,TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox),table, TRUE,TRUE,0);
+
+///////////////////////////////////////////// FIRST COLUMN  ///////////////////////////////////////////////////////////////
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_table_attach_defaults(GTK_TABLE(table), vbox, 0,1, 0, 3); 
+ 
+
+  	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+  	btn_select_directory_to_save = gtk_file_chooser_button_new ("Select Directory", GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_select_directory_to_save, TRUE, TRUE, 0);
+
+   	hbox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE, 0);  	     
+
+	btn_create_recording_folder = gtk_button_new_with_label("Create Recording Folder");
+	gtk_box_pack_start (GTK_BOX (hbox), btn_create_recording_folder, TRUE, TRUE, 0);
+	set_directory_btn_select_directory_to_save();
+
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  	
+
+  	hbox = gtk_hbox_new(TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_start_recording = gtk_button_new_with_label("Start Recording");
+        gtk_box_pack_start(GTK_BOX(hbox),btn_start_recording , TRUE,TRUE,0);
+
+
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  
+
+  	hbox = gtk_hbox_new(TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_stop_recording = gtk_button_new_with_label("Stop Recording");
+        gtk_box_pack_start(GTK_BOX(hbox),btn_stop_recording , TRUE,TRUE,0);
+
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  
+
+  	hbox = gtk_hbox_new(TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	btn_cancel_recording = gtk_button_new_with_label("Cancel Recording");
+        gtk_box_pack_start(GTK_BOX(hbox),btn_cancel_recording , TRUE,TRUE,0);
+
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(), FALSE,FALSE, 5);  
+
+  	hbox = gtk_hbox_new(TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox),hbox, FALSE,FALSE,0);
+
+	lbl = gtk_label_new("Recording Status:");
+	gtk_box_pack_start (GTK_BOX (hbox), lbl, FALSE, FALSE, 0);
+
+	lbl_recording_status = gtk_label_new("IDLE");
+	gtk_box_pack_start (GTK_BOX (hbox), lbl_recording_status, FALSE, FALSE, 0);
+
+////    SIGNALS   ///////////////////////////
+
+
+	g_signal_connect(G_OBJECT(btn_start_recording), "clicked", G_CALLBACK(start_recording_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_stop_recording), "clicked", G_CALLBACK(stop_recording_button_func), NULL);
+	g_signal_connect(G_OBJECT(btn_cancel_recording), "clicked", G_CALLBACK(cancel_recording_button_func), NULL);
+
+	g_signal_connect(G_OBJECT(btn_create_recording_folder), "clicked", G_CALLBACK(create_recording_folder_button_func), NULL);
+
+
+  	g_timeout_add(50, timeout_callback, NULL);		
+
+///////////////////   SENSITIVITY   ////////////////////////////////////////
+
+	gtk_widget_set_sensitive(btn_start_recording, FALSE);
+	gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+	gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
+
+
+	return TRUE;
+}
+
+
+
+static void create_recording_folder_button_func (void)
+{
+	unsigned int path_len;
+	char *path_temp = NULL, *path = NULL;
+	path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
+	path = &path_temp[7];   // since     uri returns file:///home/....	
+	path_len = strlen(path_temp);
+	if (strcmp(&(path_temp[path_len-8]),"EXP_DATA") == 0)
+		return (void)print_message(ERROR_MSG ,"HybridNetwork", "Gui", "create_recording_folder_button_func", "Selected folder is /EXP_DATA main folder. Select a folder inside this folder.");				
+	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, path))		// record in last format version
+	{
+		gtk_widget_set_sensitive(btn_start_recording, TRUE);
+	}
+	else
+		print_message(ERROR_MSG ,"HybridNetwork", "Gui", "create_recording_folder_button_func", " *create_main_directory().");			
+}
+
+
+static void set_directory_btn_select_directory_to_save(void)
+{
+	char line[600];
+	FILE *fp = NULL;
+       	if ((fp = fopen("./SNN/path_initial_directory", "r")) == NULL)  
+       	{ 
+		print_message(ERROR_MSG ,"HybridNetwork", "Gui", "set_directory_btn_select_directory_to_save", "Couldn't find file: ./path_initial_directory.");
+		print_message(ERROR_MSG ,"HybridNetwork", "Gui", "set_directory_btn_select_directory_to_save", "/home is loaded as initial direcoty to create data folder.");
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (btn_select_directory_to_save),"/home");
+       	}
+       	else
+       	{
+		if (fgets(line, sizeof line, fp ) == NULL) 
+		{ 
+			print_message(ERROR_MSG ,"HybridNetwork", "Gui", "set_directory_btn_select_directory_to_save", "Couldn' t read ./path_initial_directory.");
+			print_message(ERROR_MSG ,"HybridNetwork", "Gui", "set_directory_btn_select_directory_to_save", "/home is loaded as initial direcoty to create data folder.");
+			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (btn_select_directory_to_save),"/home");
+		}
+		else
+		{
+			line[strlen(line)-16] = 0;   
+			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (btn_select_directory_to_save),line);
+		}
+		fclose(fp); 		
+	}  	 
+}
+
+
+static void start_recording_button_func (void)
+{
+	static unsigned int recording_number = 0;
+	
+	NeuralNet2GuiMsgAdditional neural_net_2_gui_msg_add;
+	neural_net_2_gui_msg_add.recording_number = recording_number;
+	if (! write_to_neural_net_2_gui_msg_buffer(msgs_neural_net_2_gui, rt_tasks_data->current_system_time, NEURAL_NET_2_GUI_MSG_START_RECORDING, neural_net_2_gui_msg_add)) 
+	{
+		print_message(BUG_MSG ,"NeuralNetler", "HandleExpCtrl2NeuralNetMsgs", "write_to_neural_net_2_gui_msg_buffer", "! write_to_neural_net_2_gui_msg_buffer(().");
+		exit(1); 
+	}
+	recording_number++;	
+
+	gtk_widget_set_sensitive(btn_start_recording, FALSE);
+	gtk_widget_set_sensitive(btn_stop_recording, TRUE);
+	gtk_widget_set_sensitive(btn_cancel_recording, TRUE);
+}
+
+static void stop_recording_button_func (void)
+{
+	NeuralNet2GuiMsgAdditional neural_net_2_gui_msg_add;	
+	neural_net_2_gui_msg_add.recording_number = 0;    // send dummy number. start_recording_button_func hold the current recording number
+	if (! write_to_neural_net_2_gui_msg_buffer(msgs_neural_net_2_gui, rt_tasks_data->current_system_time, NEURAL_NET_2_GUI_MSG_STOP_RECORDING, neural_net_2_gui_msg_add)) 
+	{
+		print_message(BUG_MSG ,"NeuralNetler", "HandleExpCtrl2NeuralNetMsgs", "write_to_neural_net_2_gui_msg_buffer", "! write_to_neural_net_2_gui_msg_buffer(().");
+		exit(1); 
+	}	
+	gtk_widget_set_sensitive(btn_start_recording, TRUE);
+	gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+	gtk_widget_set_sensitive(btn_cancel_recording, FALSE);
+}
+
+static void cancel_recording_button_func (void)
+{
+	NeuralNet2GuiMsgAdditional neural_net_2_gui_msg_add;	
+	neural_net_2_gui_msg_add.recording_number = 0;    // send dummy number. start_recording_button_func hold the current recording number
+	if (! write_to_neural_net_2_gui_msg_buffer(msgs_neural_net_2_gui, rt_tasks_data->current_system_time, NEURAL_NET_2_GUI_MSG_CANCEL_RECORDING, neural_net_2_gui_msg_add)) 
+	{
+		print_message(BUG_MSG ,"NeuralNetler", "HandleExpCtrl2NeuralNetMsgs", "write_to_neural_net_2_gui_msg_buffer", "! write_to_neural_net_2_gui_msg_buffer(().");
+		exit(1); 
+	}
+	gtk_widget_set_sensitive(btn_start_recording, TRUE);
+	gtk_widget_set_sensitive(btn_stop_recording, FALSE);
+	gtk_widget_set_sensitive(btn_cancel_recording, FALSE);			
+}
+
+
+static gboolean timeout_callback(gpointer user_data) 
+{
+	char *path_temp, *path;
+	static bool recording = FALSE;
+	static unsigned int recording_number;
+	unsigned int i;
+	char temp[100];
+	NeuralNet2GuiMsgItem msg_item;
+
+	while (get_next_neural_net_2_gui_msg_buffer_item(msgs_neural_net_2_gui, &msg_item))
+	{
+		switch (msg_item.msg_type)
+		{
+			case NEURAL_NET_2_GUI_MSG_START_RECORDING:
+				path_temp = NULL; path = NULL;
+				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
+				path = &path_temp[7];   // since     uri returns file:///home/....	
+				recording_number = msg_item.additional_data.recording_number;
+				if (!(*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, rt_tasks_data->current_system_time, recording_number))	
+				{
+					print_message(ERROR_MSG ,"HybridNetwork", "Gui", "timeout_callback", " *create_data_directory().");		
+					exit(1);
+				}
+				recording = TRUE;
+
+				sprintf (temp, "RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);	
+				break;
+			case NEURAL_NET_2_GUI_MSG_STOP_RECORDING:
+				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, rt_tasks_data->current_system_time))	
+				{
+					print_message(ERROR_MSG ,"HybridNetwork", "Gui", "timeout_callback", " *fclose_all_data_file().");		
+					exit(1);
+				}
+				recording = FALSE;
+
+				sprintf (temp, "FINISHED RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);		
+				break;
+			case NEURAL_NET_2_GUI_MSG_CANCEL_RECORDING:
+				path_temp = NULL; path = NULL;
+				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
+				path = &path_temp[7];   // since     uri returns file:///home/....		
+
+				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, rt_tasks_data->current_system_time))	
+				{
+					print_message(ERROR_MSG ,"HybridNetwork", "Gui", "timeout_callback", "! *fclose_all_data_files().");
+					exit(1);
+				}
+				if (! (*delete_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, recording_number))
+				{
+					print_message(ERROR_MSG ,"HybridNetwork", "Gui", "timeout_callback", " *delete_all_data_files().");
+					exit(1);
+				}
+				recording = FALSE;
+
+				sprintf (temp, "CANCELED RECORDING DAT%u", recording_number);
+				gtk_label_set_text (GTK_LABEL (lbl_recording_status), temp);	
+				break;
+			default:
+				return print_message(ERROR_MSG ,"HybridNetwork", "Gui", "timeout_callback", "switch (msg_item.msg_type) - default");
+		}
+	}
+	if (recording)
+	{
+		if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(0))	
+		{
+			print_message(ERROR_MSG ,"HybridNetwork", "Gui", "timeout_callback", " *write_to_data_files().");		
+			exit(1);
+		}	
+	}
+	else
+	{
+		for (i = 0; i < MAX_NUM_OF_DAQ_CARD; i++)
+		{
+			reset_spike_data_read_idx(blue_spike_spike_data_for_recording[i]);
+		}
+	}
+	return TRUE;
+}
+
+
