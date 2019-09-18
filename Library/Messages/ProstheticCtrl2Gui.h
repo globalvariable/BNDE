@@ -15,6 +15,7 @@ typedef unsigned int ProstheticCtrl2GuiMsgAdditional;
 #define PROSTHETIC_CTRL_2_GUI_MSG_START_RECORDING	1
 #define PROSTHETIC_CTRL_2_GUI_MSG_STOP_RECORDING		2
 #define PROSTHETIC_CTRL_2_GUI_MSG_CANCEL_RECORDING	3
+#define PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED 4
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

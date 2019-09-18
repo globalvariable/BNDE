@@ -7,7 +7,7 @@
 #include "../../../Library/Thresholding/Thresholding.h"
 #include "Gui.h"
 #include "ProstheticControlRtTask.h"
-
+#include <locale.h>
 
 
 

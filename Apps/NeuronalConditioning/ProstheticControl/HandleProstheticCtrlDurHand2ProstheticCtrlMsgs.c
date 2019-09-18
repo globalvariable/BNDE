@@ -33,6 +33,7 @@ bool handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg(ThreeDofRobot 
 									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! write_to_prosthetic_ctrl_2_exp_ctrl_msg_buffer()");
 								if (! write_to_prosthetic_ctrl_status_history(prosthetic_ctrl_status_history, current_time, PROSTHETIC_CTRL_STATUS_AVAILABLE_TO_CONTROL))
 									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! write_to_prosthetic_ctrl_status_history()");
+
 								break;
 							case PROSTHETIC_CTRL_STATUS_AVAILABLE_TO_CONTROL:
 								return print_message(BUG_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "PROSTHETIC_CTRL_DUR_STATUS_ITEM_STAY_AT_CURRENT_POSITION & *prosthetic_ctrl_status - PROSTHETIC_CTRL_STATUS_AVAILABLE_TO_CONTROL");									

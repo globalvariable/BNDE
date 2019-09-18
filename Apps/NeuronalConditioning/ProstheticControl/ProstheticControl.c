@@ -36,6 +36,8 @@ int main( int argc, char *argv[])
 	unsigned int i;
 	ServoPulse diff_pulse;
 
+    	setlocale(LC_ALL,  "en_US.UTF-8"); // ".OCP" if you want to use system settings
+
    	rt_tasks_data = rtai_malloc(SHM_NUM_RT_TASKS_DATA, 0);
 	if (rt_tasks_data == NULL) 
 		return print_message(ERROR_MSG ,"ProstheticControl", "ProstheticControl", "main", "rt_tasks_data == NULL.");

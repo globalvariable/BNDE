@@ -214,26 +214,26 @@ static gboolean timeout_callback(gpointer graph)
 				path_temp = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (btn_select_directory_to_save));
 				path = &path_temp[7];   // since     uri returns file:///home/....	
 				recording_number = msg_item.additional_data;
-				if (!(*create_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_rt_tasks_data->current_system_time, recording_number))	
+				if (!(*create_data_directory[DATA_FORMAT_VERSION])(3, path, static_rt_tasks_data->current_system_time, recording_number))	
 				{
 					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *create_data_directory().");		
 					exit(1);
 				}
 				recording = TRUE;	
-				if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, static_prosthetic_ctrl_status_history, static_robot_angle_history, static_robot_pulse_history))	// this function handles history buffers
+				if (!(*write_to_data_files[DATA_FORMAT_VERSION])(4, static_prosthetic_ctrl_status_history, static_robot_angle_history, static_robot_pulse_history, NULL))	// this function handles history buffers
 				{
 					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *write_to_data_files().");		
 					exit(1);
 				}				
 				break;
 			case PROSTHETIC_CTRL_2_GUI_MSG_STOP_RECORDING:
-				if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, static_prosthetic_ctrl_status_history, static_robot_angle_history, static_robot_pulse_history))	// this function handles history buffers
+				if (!(*write_to_data_files[DATA_FORMAT_VERSION])(4, static_prosthetic_ctrl_status_history, static_robot_angle_history, static_robot_pulse_history, NULL))	// this function handles history buffers
 				{
 					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *write_to_data_files().");		
 					exit(1);
 				}	
 				recording_number = msg_item.additional_data;
-				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, static_rt_tasks_data->current_system_time))	
+				if (! (*fclose_all_data_files[DATA_FORMAT_VERSION])(1, static_rt_tasks_data->current_system_time))	
 				{
 					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *fclose_all_data_file().");		
 					exit(1);
@@ -250,17 +250,24 @@ static gboolean timeout_callback(gpointer graph)
 				static_robot_pulse_history->buff_read_idx = static_robot_pulse_history->buff_write_idx;
 
 				recording_number = msg_item.additional_data;
-				if (! (*fclose_all_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(1, static_rt_tasks_data->current_system_time))	
+				if (! (*fclose_all_data_files[DATA_FORMAT_VERSION])(1, static_rt_tasks_data->current_system_time))	
 				{
 					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", "! *fclose_all_data_files().");
 					exit(1);
 				}
-				if (! (*delete_data_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(2, path, recording_number))
+				if (! (*delete_data_directory[DATA_FORMAT_VERSION])(2, path, recording_number))
 				{
 					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *fdelete_all_data_files().");
 					exit(1);
 				}
 				recording = FALSE;	
+				break;
+			case PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED:
+				if (!(*write_to_data_files[DATA_FORMAT_VERSION])(4, NULL, NULL, NULL, static_prosthetic_ctrl_paradigm))	// this function handles history buffers
+				{
+					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *write_to_data_files().");		
+					exit(1);
+				}	
 				break;
 			default:
 				return print_message(ERROR_MSG ,"ExpControl", "GuiProstheticControl", "timeout_callback", "switch (msg_item.msg_type) - default");
@@ -268,7 +275,7 @@ static gboolean timeout_callback(gpointer graph)
 	}
 	if (recording)
 	{
-		if (!(*write_to_data_files[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, static_prosthetic_ctrl_status_history, static_robot_angle_history, static_robot_pulse_history))	// this function handles history buffers
+		if (!(*write_to_data_files[DATA_FORMAT_VERSION])(4, static_prosthetic_ctrl_status_history, static_robot_angle_history, static_robot_pulse_history, NULL))	// this function handles history buffers
 		{
 			print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *write_to_data_files().");		
 			exit(1);
@@ -292,7 +299,7 @@ static void create_recording_folder_button_func (void)
 	path_len = strlen(path_temp);
 	if (strcmp(&(path_temp[path_len-8]),"EXP_DATA") == 0)
 		return (void)print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "create_recording_folder_button_func", "Selected folder is /EXP_DATA main folder. Select a folder inside this folder.");				
-	if ((*create_main_directory[MAX_NUMBER_OF_DATA_FORMAT_VER-1])(3, path, static_prosthetic_ctrl_paradigm, static_robot_arm))		// record in last format version
+	if ((*create_main_directory[DATA_FORMAT_VERSION])(3, path, static_prosthetic_ctrl_paradigm, static_robot_arm))		// record in last format version
 	{
 		
 	}

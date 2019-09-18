@@ -16,6 +16,10 @@ bool get_prosthetic_ctrl_2_gui_msg_type_string(ProstheticCtrl2GuiMsgType msg_typ
 			if (str != NULL)
  				strcpy(str, "PROSTHETIC_CTRL_2_GUI_MSG_CANCEL_RECORDING");
 			return TRUE;
+		case PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED:
+			if (str != NULL)
+ 				strcpy(str, "PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED");
+			return TRUE;
 /////////////////////////		
 		case PROSTHETIC_CTRL_2_GUI_MSG_NULL:
 			if (str != NULL)

@@ -12,6 +12,16 @@ int initialize_data_read_write_handlers(void)
 	write_notes_to_files[0] = &write_notes_to_files_v0;
 	write_additional_notes_to_files[0] = &write_additional_notes_to_files_v0;
 	
+	create_main_directory[1] = &create_main_directory_v1;
+	create_data_directory[1] = &create_data_directory_v1;
+	fclose_all_data_files[1] = &fclose_all_data_files_v1;
+	delete_data_directory[1] = &delete_data_directory_v1;
+	write_to_data_files[1] = &write_to_data_files_v1;
+
+	write_notes_to_files[1] = &write_notes_to_files_v1;
+	write_additional_notes_to_files[1] = &write_additional_notes_to_files_v1;
+	
+
 
 	
 	return 1;

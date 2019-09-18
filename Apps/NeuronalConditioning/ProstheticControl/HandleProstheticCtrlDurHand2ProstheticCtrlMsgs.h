@@ -13,6 +13,7 @@
 #include "../../../Library/Messages/ProstheticCtrl2ProstheticCtrlDurHand.h"
 #include "../../../Library/Messages/ProstheticCtrl2ExpCtrl.h"
 #include "../../../Library/Messages/ProstheticCtrl2NeuralNet.h"
+#include "../../../Library/Messages/ProstheticCtrl2Gui.h"
 #include "../../../Library/Robot/ThreeDofRobot.h"
 #include "../../../Library/LogBuffer/MessageLogBuffer.h"
 #include "HandleRS232Buffers.h"

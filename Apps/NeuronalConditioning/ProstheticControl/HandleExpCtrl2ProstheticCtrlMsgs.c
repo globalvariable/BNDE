@@ -31,6 +31,8 @@ bool handle_exp_control_to_prosthetic_control_msg(ThreeDofRobot *robot_arm, Pros
 							if (! write_to_prosthetic_ctrl_2_neural_net_msg_buffer(msgs_prosthetic_ctrl_2_neural_net_multi_thread[i], current_time, PROSTHETIC_CTRL_2_NEURAL_NET_MSG_START_TRIAL, prosthetic_ctrl_2_neural_net_msg_add))
 								return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! write_to_prosthetic_ctrl_2_neural_net_msg_buffer()");
 						}
+						if (! write_to_prosthetic_ctrl_2_gui_msg_buffer(msgs_prosthetic_ctrl_2_gui, current_time,  PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED, 0))
+									return print_message(ERROR_MSG ,"ProstheticControl", "HandleProstheticCtrlDurHand2ProstheticCtrlMsgs", "handle_prosthetic_ctrl_dur_handler_to_prosthetic_control_msg", "! write_to_prosthetic_ctrl_2_exp_ctrl_msg_buffer()");
 						break;
 
 				case PROSTHETIC_CTRL_STATUS_STAYING_AT_START_POINT:
