@@ -263,10 +263,13 @@ static gboolean timeout_callback(gpointer graph)
 				recording = FALSE;	
 				break;
 			case PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED:
-				if (!(*write_to_data_files[DATA_FORMAT_VERSION])(4, NULL, NULL, NULL, static_prosthetic_ctrl_paradigm))	// this function handles history buffers
+				if (recording) // recording files are created when PROSTHETIC_CTRL_2_GUI_MSG_START_RECORDING comes. when recording is not iniatiated by START button in recording panel of ExpControl, PROSTHETIC_CTRL_2_GUI_MSG_START_RECORDING will not come. But PROSTHETIC_CTRL_2_GUI_MSG_PROSTHETIC_CTRL_CONTROL_ENABLED will come whenever a trial starts. if you try to write into paradigm data file using the below write_to_data_files function before creating a paradigm data file, there will appear a segmanetation fault. To prevent this problem, here is this if check.
 				{
-					print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *write_to_data_files().");		
-					exit(1);
+					if (!(*write_to_data_files[DATA_FORMAT_VERSION])(4, NULL, NULL, NULL, static_prosthetic_ctrl_paradigm))	// this function handles history buffers
+					{
+						print_message(ERROR_MSG ,"ProstheticControl", "GuiProstheticControl", "timeout_callback", " *write_to_data_files().");		
+						exit(1);
+					}
 				}	
 				break;
 			default:
