@@ -1,0 +1,39 @@
+----------ConfigDaq Data----------
+VERSION	0
+MAX_NUM_OF_DAQ_CARD	1
+MAX_NUM_OF_CHANNEL_PER_DAQ_CARD	32
+MAX_NUM_OF_MWA	2
+MAX_NUM_OF_CHAN_PER_MWA	16
+DAQ:	0	Channel:	0	---->	MWA:	0	Channel:	0	
+DAQ:	0	Channel:	1	---->	MWA:	0	Channel:	1	
+DAQ:	0	Channel:	2	---->	MWA:	0	Channel:	2	
+DAQ:	0	Channel:	3	---->	MWA:	0	Channel:	3	
+DAQ:	0	Channel:	4	---->	MWA:	0	Channel:	4	
+DAQ:	0	Channel:	5	---->	MWA:	0	Channel:	5	
+DAQ:	0	Channel:	6	---->	MWA:	0	Channel:	6	
+DAQ:	0	Channel:	7	---->	MWA:	0	Channel:	7	
+DAQ:	0	Channel:	8	---->	MWA:	0	Channel:	8	
+DAQ:	0	Channel:	9	---->	MWA:	0	Channel:	9	
+DAQ:	0	Channel:	10	---->	MWA:	0	Channel:	10	
+DAQ:	0	Channel:	11	---->	MWA:	0	Channel:	11	
+DAQ:	0	Channel:	12	---->	MWA:	0	Channel:	12	
+DAQ:	0	Channel:	13	---->	MWA:	0	Channel:	13	
+DAQ:	0	Channel:	14	---->	MWA:	0	Channel:	14	
+DAQ:	0	Channel:	15	---->	MWA:	0	Channel:	15	
+DAQ:	0	Channel:	16	---->	MWA:	1	Channel:	0	
+DAQ:	0	Channel:	17	---->	MWA:	1	Channel:	1	
+DAQ:	0	Channel:	18	---->	MWA:	1	Channel:	2	
+DAQ:	0	Channel:	19	---->	MWA:	1	Channel:	3	
+DAQ:	0	Channel:	20	---->	MWA:	1	Channel:	4	
+DAQ:	0	Channel:	21	---->	MWA:	1	Channel:	5	
+DAQ:	0	Channel:	22	---->	MWA:	1	Channel:	6	
+DAQ:	0	Channel:	23	---->	MWA:	1	Channel:	7	
+DAQ:	0	Channel:	24	---->	MWA:	1	Channel:	8	
+DAQ:	0	Channel:	25	---->	MWA:	1	Channel:	9	
+DAQ:	0	Channel:	26	---->	MWA:	1	Channel:	10	
+DAQ:	0	Channel:	27	---->	MWA:	1	Channel:	11	
+DAQ:	0	Channel:	28	---->	MWA:	1	Channel:	12	
+DAQ:	0	Channel:	29	---->	MWA:	1	Channel:	13	
+DAQ:	0	Channel:	30	---->	MWA:	1	Channel:	14	
+DAQ:	0	Channel:	31	---->	MWA:	1	Channel:	15	
+----------End of ConfigDaq Data----------

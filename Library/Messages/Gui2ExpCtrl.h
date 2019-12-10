@@ -38,6 +38,7 @@ typedef unsigned int Gui2ExpCtrlMsgAdditional;
 #define GUI_2_EXP_CTRL_MSG_FULL_CATCH_TRIAL_MODE_ON				24
 #define GUI_2_EXP_CTRL_MSG_FULL_CATCH_TRIAL_MODE_OFF			25
 #define GUI_2_EXP_CTRL_MSG_START_TRIAL_REQUEST					26
+#define GUI_2_EXP_CTRL_MSG_PUNISHMENT_REQUEST 				27
 
 #include <stdbool.h>
 #include <gtk/gtk.h>

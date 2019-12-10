@@ -106,6 +106,10 @@ bool get_gui_2_exp_ctrl_msg_type_string(Gui2ExpCtrlMsgType msg_type, char *str)
 			if (str != NULL)
 				strcpy(str, "GUI_2_EXP_CTRL_MSG_START_TRIAL_REQUEST");
 			return TRUE;
+		case GUI_2_EXP_CTRL_MSG_PUNISHMENT_REQUEST:
+			if (str != NULL)
+				strcpy(str, "GUI_2_EXP_CTRL_MSG_PUNISHMENT_REQUEST");
+			return TRUE;
 /////////////////////////		
 		case GUI_2_EXP_CTRL_MSG_NULL:
 			if (str != NULL)
