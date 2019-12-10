@@ -88,6 +88,7 @@ static int spike_filter_mode_on = 0;
 static int rect_switch = 0;
 static float x_upper_1 = 0.0, x_lower_1 = 0.0, y_upper_1 = 0.0, y_lower_1 = 0.0;   // for rectangle to select areas for spike filtering
 static float x_upper_2 = 0.0, x_lower_2 = 0.0, y_upper_2 = 0.0, y_lower_2 = 0.0; 
+static float x_upper_3 = 0.0, x_lower_3 = 0.0, y_upper_3 = 0.0, y_lower_3 = 0.0; 
 
 static int disp_paused = 0;
 
@@ -1064,35 +1065,11 @@ static void pause_button_func(void)
 static void spike_selection_rectangle_func(GtkDatabox * box, GtkDataboxValueRectangle * selectionValues)
 {
 	printf ("SpikeSorter:\n");
-	printf ("%f %f %f %f\n", selectionValues->x1, selectionValues->x2, selectionValues->y1, selectionValues->y2);
+	printf ("%d: %f %f %f %f\n", rect_switch, selectionValues->x1, selectionValues->x2, selectionValues->y1, selectionValues->y2);
 
 	if (spike_filter_mode_on)
 	{
-		if (rect_switch)
-		{
-			rect_switch = 0;		
-			if (selectionValues->x1 > selectionValues->x2)
-			{
-				x_upper_2 = selectionValues->x1;
-				x_lower_2 = selectionValues->x2;
-			}
-			else 
-			{
-				x_lower_2 = selectionValues->x1;
-				x_upper_2 = selectionValues->x2;
-			}
-			if (selectionValues->y1 > selectionValues->y2)
-			{
-				y_upper_2 = selectionValues->y1;
-				y_lower_2 = selectionValues->y2;
-			}
-			else 
-			{
-				y_lower_2 = selectionValues->y1;
-				y_upper_2 = selectionValues->y2;
-			}
-		}
-		else
+		if (rect_switch == 0)
 		{
 			rect_switch = 1;		
 			if (selectionValues->x1 > selectionValues->x2)
@@ -1115,8 +1092,61 @@ static void spike_selection_rectangle_func(GtkDatabox * box, GtkDataboxValueRect
 				y_lower_1 = selectionValues->y1;
 				y_upper_1 = selectionValues->y2;
 			}
-		}		
-		return;
+			return;	
+		}
+		
+		if (rect_switch == 1)
+		{
+			rect_switch = 2;		
+			if (selectionValues->x1 > selectionValues->x2)
+			{
+				x_upper_2 = selectionValues->x1;
+				x_lower_2 = selectionValues->x2;
+			}
+			else 
+			{
+				x_lower_2 = selectionValues->x1;
+				x_upper_2 = selectionValues->x2;
+			}
+			if (selectionValues->y1 > selectionValues->y2)
+			{
+				y_upper_2 = selectionValues->y1;
+				y_lower_2 = selectionValues->y2;
+			}
+			else 
+			{
+				y_lower_2 = selectionValues->y1;
+				y_upper_2 = selectionValues->y2;
+			}
+			return;	
+		}
+
+		if (rect_switch == 2)
+		{
+			rect_switch = 0;		
+			if (selectionValues->x1 > selectionValues->x2)
+			{
+				x_upper_3 = selectionValues->x1;
+				x_lower_3 = selectionValues->x2;
+			}
+			else 
+			{
+				x_lower_3 = selectionValues->x1;
+				x_upper_3 = selectionValues->x2;
+			}
+			if (selectionValues->y1 > selectionValues->y2)
+			{
+				y_upper_3 = selectionValues->y1;
+				y_lower_3 = selectionValues->y2;
+			}
+			else 
+			{
+				y_lower_3 = selectionValues->y1;
+				y_upper_3 = selectionValues->y2;
+			}
+			return;	
+		}
+
 	}
 	
 	float x_upper, x_lower, y_upper, y_lower;  
@@ -1407,26 +1437,42 @@ gboolean timeout_callback(gpointer user_data)
 			{
 				if ((Y_temp[i]  >=  y_lower_1) && (Y_temp[i] <=  y_upper_1) && (i >= x_lower_1) && (i <= x_upper_1)) 
 				{
-					for (j = 0; j < NUM_OF_SAMP_PER_SPIKE; j++)
-					{
-						if ((Y_temp[j]  >=  y_lower_2) && (Y_temp[j] <=  y_upper_2) && (j >= x_lower_2) && (j <= x_upper_2))
-						{
-							spike_in_range = 1;
-							break;
-						} 							
-					}
-					if (spike_in_range)
-					{
-						Y_non_sorted_all_spikes_last_g_ptr_array_idx ++;
-						if (Y_non_sorted_all_spikes_last_g_ptr_array_idx == SPIKE_MEM_TO_DISPLAY_ALL_NONSORTED_SPIKE)
-							Y_non_sorted_all_spikes_last_g_ptr_array_idx = 0;
-						dbl_Y_non_sorted_all_spikes_last_g_ptr_array_idx ++;
-						if (dbl_Y_non_sorted_all_spikes_last_g_ptr_array_idx == SPIKE_MEM_TO_DISPLAY_ALL_NONSORTED_SPIKE)
-							dbl_Y_non_sorted_all_spikes_last_g_ptr_array_idx = 0;									
-						break;					
-					}				
+					goto CHECK_RANGE_2;
 				}
 			}
+			goto SPIKE_NOT_IN_RANGE;
+
+			CHECK_RANGE_2:			
+			for (i = 0; i < NUM_OF_SAMP_PER_SPIKE; i++)
+			{
+				if ((Y_temp[i]  >=  y_lower_2) && (Y_temp[i] <=  y_upper_2) && (i >= x_lower_2) && (i <= x_upper_2))
+				{
+					goto CHECK_RANGE_3;
+				}
+			}
+			goto SPIKE_NOT_IN_RANGE;
+
+			CHECK_RANGE_3:
+			for (i = 0; i < NUM_OF_SAMP_PER_SPIKE; i++)
+			{
+				if ((Y_temp[i]  >=  y_lower_3) && (Y_temp[i] <=  y_upper_3) && (i >= x_lower_3) && (i <= x_upper_3))
+				{
+					spike_in_range = 1;
+					break;
+				}
+			}
+
+			if (spike_in_range)
+			{
+				Y_non_sorted_all_spikes_last_g_ptr_array_idx ++;
+				if (Y_non_sorted_all_spikes_last_g_ptr_array_idx == SPIKE_MEM_TO_DISPLAY_ALL_NONSORTED_SPIKE)
+					Y_non_sorted_all_spikes_last_g_ptr_array_idx = 0;
+				dbl_Y_non_sorted_all_spikes_last_g_ptr_array_idx ++;
+				if (dbl_Y_non_sorted_all_spikes_last_g_ptr_array_idx == SPIKE_MEM_TO_DISPLAY_ALL_NONSORTED_SPIKE)
+					dbl_Y_non_sorted_all_spikes_last_g_ptr_array_idx = 0;	
+			}
+
+			SPIKE_NOT_IN_RANGE:
 			if (!spike_in_range)
 			{
 				for (i = 0; i < NUM_OF_SAMP_PER_SPIKE; i++)
