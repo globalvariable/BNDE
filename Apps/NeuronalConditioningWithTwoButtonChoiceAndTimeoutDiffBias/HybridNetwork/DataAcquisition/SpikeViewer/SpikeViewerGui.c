@@ -132,21 +132,6 @@ bool create_spike_viewer_gui(GtkWidget *tabs)
         lbl = gtk_label_new(": Channel");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, TRUE,TRUE, 0);
  
- 
-    	hbox = gtk_hbox_new(FALSE, 0);
-  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 3);
-  	
-    	hbox = gtk_hbox_new(FALSE, 0);
-  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE,0);
-  	
-        lbl = gtk_label_new("Lower Threshold (mV): ");
-        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
-
-        entryThreshold = gtk_entry_new();
-        gtk_box_pack_start(GTK_BOX(hbox),entryThreshold, FALSE,FALSE,0);
-	gtk_widget_set_size_request(entryThreshold, 80, 25);
-
-	gtk_entry_set_text (GTK_ENTRY(entryThreshold), "0.00");
 
 
     	hbox = gtk_hbox_new(FALSE, 0);
@@ -163,6 +148,23 @@ bool create_spike_viewer_gui(GtkWidget *tabs)
 	gtk_widget_set_size_request(entryUpperThreshold, 80, 25);
 
 	gtk_entry_set_text (GTK_ENTRY(entryUpperThreshold), "0.00");
+
+ 
+    	hbox = gtk_hbox_new(FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 3);
+  	
+    	hbox = gtk_hbox_new(FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE,0);
+  	
+        lbl = gtk_label_new("Lower Threshold (mV): ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+
+        entryThreshold = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox),entryThreshold, FALSE,FALSE,0);
+	gtk_widget_set_size_request(entryThreshold, 80, 25);
+
+	gtk_entry_set_text (GTK_ENTRY(entryThreshold), "0.00");
+
 
     	hbox = gtk_hbox_new(FALSE, 0);
   	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 3);
