@@ -23,6 +23,7 @@ static GtkWidget *btn_save_spike_thresholds_file;
 
 
 static GtkWidget *entryThreshold;
+static GtkWidget *entryUpperThreshold;
 
 static GdkColor color_bg_signal;
 static GdkColor color_signal;
@@ -138,7 +139,7 @@ bool create_spike_viewer_gui(GtkWidget *tabs)
     	hbox = gtk_hbox_new(FALSE, 0);
   	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE,0);
   	
-        lbl = gtk_label_new("Threshold (mV): ");
+        lbl = gtk_label_new("Lower Threshold (mV): ");
         gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
 
         entryThreshold = gtk_entry_new();
@@ -148,8 +149,27 @@ bool create_spike_viewer_gui(GtkWidget *tabs)
 	gtk_entry_set_text (GTK_ENTRY(entryThreshold), "0.00");
 
 
-	threshold_button = gtk_button_new_with_label("Submit");
+    	hbox = gtk_hbox_new(FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 3);
+  	
+    	hbox = gtk_hbox_new(FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE,0);
+  	
+        lbl = gtk_label_new("Upper Threshold (mV): ");
+        gtk_box_pack_start(GTK_BOX(hbox),lbl, FALSE, FALSE, 0);
+
+        entryUpperThreshold = gtk_entry_new();
+        gtk_box_pack_start(GTK_BOX(hbox),entryUpperThreshold, FALSE,FALSE,0);
+	gtk_widget_set_size_request(entryUpperThreshold, 80, 25);
+
+	gtk_entry_set_text (GTK_ENTRY(entryUpperThreshold), "0.00");
+
+    	hbox = gtk_hbox_new(FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 3);
+
+	threshold_button = gtk_button_new_with_label("Submit Thresholds");
 	gtk_box_pack_start (GTK_BOX (hbox), threshold_button, TRUE, TRUE, 0);	
+
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE,FALSE,0);	
@@ -457,6 +477,8 @@ static gboolean combo_mwa_func (GtkDatabox * box)
 
 	sprintf(thres, "%.2f" , spike_thresholding.amplitude_thres[display_mwa][display_mwa_chan]);
 	gtk_entry_set_text (GTK_ENTRY(entryThreshold), thres);	
+	sprintf(thres, "%.2f" , spike_thresholding.amplitude_upper_thres[display_mwa][display_mwa_chan]);
+	gtk_entry_set_text (GTK_ENTRY(entryUpperThreshold), thres);	
 	clear_spike_screen();
 	clear_raw_data_screen();		
 	return TRUE;	
@@ -478,6 +500,8 @@ static gboolean combo_chan_func (GtkDatabox * box)
 
 	sprintf(thres, "%.2f" , spike_thresholding.amplitude_thres[display_mwa][display_mwa_chan]);
 	gtk_entry_set_text (GTK_ENTRY(entryThreshold), thres);	
+	sprintf(thres, "%.2f" , spike_thresholding.amplitude_upper_thres[display_mwa][display_mwa_chan]);
+	gtk_entry_set_text (GTK_ENTRY(entryUpperThreshold), thres);	
 	clear_spike_screen();
 	clear_raw_data_screen();		
 	return TRUE;	
@@ -529,21 +553,36 @@ static gboolean filter_on_off_button_func (GtkDatabox * box)
 
 static gboolean threshold_but_func (GtkDatabox * box)
 {
-	float threshold = atof(gtk_entry_get_text(GTK_ENTRY(entryThreshold)));
+	float lower_threshold = atof(gtk_entry_get_text(GTK_ENTRY(entryThreshold)));
 
+	float upper_threshold = atof(gtk_entry_get_text(GTK_ENTRY(entryUpperThreshold)));
 
-
-	if (threshold <= 0.0)
+	if (lower_threshold > upper_threshold)
 	{
-		if (threshold == 0.0)
-		{
-			printf("Spike detection is disable for this channel by applying 0.0 Volts as threshold\n");		
+		printf("WARNING: Upper Threshold cannot be smaller than Lower Threshold\n");
+		printf("WARNING: Submit Threshold cancelled\n");	
+		return TRUE;	
+	}
+	if (upper_threshold < 0)
+	{
+		printf("WARNING: Upper Threshold cannot be smaller than 0.\n");
+		printf("WARNING: Submit Threshold cancelled\n");
+		return TRUE;		
+	}
+
+	if (lower_threshold <= 0.0)
+	{
+		if (lower_threshold == 0.0)
+		{	
+			upper_threshold = 0;
+			printf("Spike detection is disable for this channel by applying 0.0 Volts as Upper and Lower Thresholds\n");		
 		}
-		spike_thresholding.amplitude_thres[display_mwa][display_mwa_chan] = threshold;
+		spike_thresholding.amplitude_thres[display_mwa][display_mwa_chan] = lower_threshold;
+		spike_thresholding.amplitude_upper_thres[display_mwa][display_mwa_chan] = upper_threshold;
 	}
 	else
 	{
-		printf("WARNING: Threshold cannot be greater than 0.0\n");
+		printf("WARNING: Lower Threshold cannot be greater than 0.0\n");
 		printf("WARNING: Submit Threshold cancelled\n");		
 	}
 	return TRUE;

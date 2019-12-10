@@ -9,6 +9,7 @@ typedef float SpikeThreshold;
 typedef struct __SpikeThresholding
 {
 	SpikeThreshold 	amplitude_thres[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
+	SpikeThreshold 	amplitude_upper_thres[MAX_NUM_OF_MWA][MAX_NUM_OF_CHAN_PER_MWA];
 } SpikeThresholding;
 
 

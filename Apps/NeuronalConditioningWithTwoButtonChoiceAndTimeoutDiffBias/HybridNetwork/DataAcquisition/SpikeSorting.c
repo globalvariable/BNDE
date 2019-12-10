@@ -4,7 +4,7 @@
 static bool is_index_between_indexes(int start_idx, int end_idx, int this_idx);
 static bool handle_spike_end_handling_buffer(unsigned int mwa,  unsigned int mwa_chan, unsigned int daq_num);
 static bool find_spike_end(unsigned int mwa,  unsigned int mwa_chan, TimeStamp previous_daq_time_ns, unsigned int daq_num);
-
+static bool larger_than_upper_amplitude_thres(unsigned int mwa, unsigned int mwa_chan, int spike_end_idx, unsigned int daq_num);
 
 bool spike_sorting(unsigned int daq_num, TimeStamp previous_daq_time_ns)
 {
@@ -129,8 +129,11 @@ static bool find_spike_end(unsigned int mwa,  unsigned int mwa_chan, TimeStamp p
 				
 			if (is_index_between_indexes(interpolated_data_buff_idx_prev[mwa][mwa_chan], interpolated_data_chan->buff_idx_write, spike_end_idx))
 			{
-				if (! run_template_matching(mwa, mwa_chan, spike_end_idx, peak_time, daq_num))
-					return print_message(ERROR_MSG ,"HybridNetwork", "SpikeSorting", "find_spike_end", "! run_template_matching()."); 
+				if (larger_than_upper_amplitude_thres(mwa, mwa_chan, spike_end_idx, daq_num))
+				{
+					if (! run_template_matching(mwa, mwa_chan, spike_end_idx, peak_time, daq_num))
+						return print_message(ERROR_MSG ,"HybridNetwork", "SpikeSorting", "find_spike_end", "! run_template_matching()."); 
+				}
 			}			
 			else 	//   Write spike end into shared_memory->spike_end_handing
 			{
@@ -180,8 +183,11 @@ static bool handle_spike_end_handling_buffer(unsigned int mwa,  unsigned int mwa
 		
 		if (is_index_between_indexes(interpolated_data_buff_idx_prev[mwa][mwa_chan], interpolated_data[mwa][mwa_chan].buff_idx_write, interpolated_data_buff_idx))
 		{
-			if (! run_template_matching(mwa, mwa_chan, interpolated_data_buff_idx, peak_time, daq_num))
-				return print_message(ERROR_MSG ,"HybridNetwork", "SpikeSorting", "handle_spike_end_handling_buffer", "! run_template_matching()."); 
+			if (larger_than_upper_amplitude_thres(mwa, mwa_chan, interpolated_data_buff_idx, daq_num))
+			{
+				if (! run_template_matching(mwa, mwa_chan, interpolated_data_buff_idx, peak_time, daq_num))
+					return print_message(ERROR_MSG ,"HybridNetwork", "SpikeSorting", "handle_spike_end_handling_buffer", "! run_template_matching().");
+			} 
 		}	
 		else
 		{
@@ -226,4 +232,25 @@ static bool is_index_between_indexes(int start_idx, int end_idx, int this_idx)
 	{
 		return 0;
 	}
+}
+
+static bool larger_than_upper_amplitude_thres(unsigned int mwa, unsigned int mwa_chan, int spike_end_idx, unsigned int daq_num)
+{
+	int i;
+	float amplitude_upper_thres;
+
+	amplitude_upper_thres = spike_thresholding.amplitude_upper_thres[mwa][mwa_chan];
+
+
+	for (i = NUM_OF_SAMP_PER_SPIKE -1; i >= 0; i--)
+	{
+		if (interpolated_data[mwa][mwa_chan].data_buff[spike_end_idx] >= amplitude_upper_thres)
+		{
+			return TRUE;
+		} 
+		spike_end_idx--;	
+		if (spike_end_idx < 0)
+			spike_end_idx	= INTERPOLATED_DATA_BUFF_SIZE + spike_end_idx;
+	}	
+	return FALSE;
 }

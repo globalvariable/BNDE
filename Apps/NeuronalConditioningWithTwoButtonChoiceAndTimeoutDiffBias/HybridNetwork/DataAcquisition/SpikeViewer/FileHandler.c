@@ -6,6 +6,8 @@ int spike_viewer_initialize_data_read_write_handlers(void)
 {
 	write_spike_thresholds_data[0] = &write_spike_thresholds_data_v0;
 	read_spike_thresholds_data[0] = &read_spike_thresholds_data_v0;
+	write_spike_thresholds_data[1] = &write_spike_thresholds_data_v1;
+	read_spike_thresholds_data[1] = &read_spike_thresholds_data_v1;
 	
 	return 1;
 }
